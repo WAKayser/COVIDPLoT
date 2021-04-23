@@ -1,3 +1,4 @@
+#!/bin/py
 """
 Vaccination progress  made in the netherlands.
 
