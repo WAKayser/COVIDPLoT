@@ -55,16 +55,27 @@ def infection_predictor(df, end):
     return prediction
 
 
-def plot_steps_gov(date, text, plt):
+def plot_steps_gov(date, text, plt, light):
     """Help function for plotting opening steps."""
-    plt.axvline(nice_date := pd.to_datetime(date))
-    plt.text(nice_date + pd.Timedelta(days=1), 50, text,
-             rotation=90, bbox={'facecolor': "white", 'linewidth': 0},
-             color='tab:blue', size='small')
+    if light:
+        plt.axvline(nice_date := pd.to_datetime(date), color='tab:blue')
+        plt.text(nice_date + pd.Timedelta(days=1), 50, text,
+                 rotation=90, bbox={'facecolor': "white", 'linewidth': 0},
+                 color='tab:blue', size='small')
+    else:
+        plt.axvline(nice_date := pd.to_datetime(date), color='w')
+        plt.text(nice_date + pd.Timedelta(days=1), 50, text,
+                 rotation=90, bbox={'facecolor': "black", 'linewidth': 0},
+                 color='w', size='small')
 
 
-def plot_danger_levels(value, text, plt):
+def plot_danger_levels(value, text, plt, light):
     """Plot the danger levels of covid."""
-    plt.axhline(value, color='k')
-    plt.text(pd.to_datetime('2021-01-02'), value + 150, text,
-             color='k')
+    if light:
+        plt.axhline(value, color='k')
+        plt.text(pd.to_datetime('2021-01-02'), value + 150, text,
+                 color='k')
+    else:
+        plt.axhline(value, color='w')
+        plt.text(pd.to_datetime('2021-01-02'), value + 150, text,
+                 color='w')

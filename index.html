@@ -3,21 +3,55 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 70%;
-  font-family: Arial;
+
+@media(min-width: 1000pt){
+	.center {
+	  display: block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  width: 70%;
+	}
+
+	.center_text {
+	  display: block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  width: 60%;
+	  font-family: Arial;
+	}
+}
+
+@media(max-width: 1000pt){
+	.center {
+	  display: block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  width: 100%;
+	}
+
+	.center_text {
+	  display: block;
+	  margin-left: auto;
+	  margin-right: auto;
+	  width: 90%;
+	  font-family: Arial;
+	}
 }
 
 </style>
 </head>
 <body>
 
-<img class="center" id="image" src="results.svg">
+<h1 class='center_text'>Corona in the Netherlands</h1>
 
-<p class="center">Everyday the results should be updated by 15:30 pm, however this can change. Data provided by government, processed by Wouter Kayser.</p>
+
+<picture>
+    <source class='center' srcset="results_dark.svg" media="(prefers-color-scheme: dark)">
+    <img class='center' src="results.svg">
+</picture>
+
+<p class='center_text'>Everyday the results should be updated by 15:30 pm, however this can change. Data provided by government, processed by <a href="https://www.wakayser.nl.">Wouter Kayser</a>.</p>
+
 
 </body>
 </html>

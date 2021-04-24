@@ -70,7 +70,7 @@ def vaccination_prediction(df, type='exponential'):
         prediction.loc[day_index - current_index] = [next_day] + [day_est]
         current_day = prediction['date'].iloc[-1]
 
-        if day_index > 1000:
+        if day_index > 200:
             break
     return prediction
 
