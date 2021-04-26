@@ -122,7 +122,7 @@ def plot_save(light=True):
     ax.set_ylim(0, 12000)
     ax.set_ylabel('Cases per day')
     ax2.set_ylabel('IC occupation per day', color='r')
-    ax2.set_ylim(0, 1000)
+    ax2.set_ylim(0, 1100)
     ax2.set_xlabel('Date')
     ax2.tick_params(axis='y', colors='red')
 
@@ -131,7 +131,7 @@ def plot_save(light=True):
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
-    ax2.axhline(1350 - ic_cap['beds_occupied_non_covid'], color='r',
+    ax2.axhline(1450 - ic_cap['beds_occupied_non_covid'], color='r',
                 linestyle='--', label='IC capacity for COVID')
 
     lines, labels = ax.get_legend_handles_labels()
