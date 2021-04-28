@@ -117,7 +117,7 @@ def plot_save(light=True):
     for step in steps:
         plot_steps_gov(*step, plt, light)
 
-    plt.axvline(df['date'].iloc[-1], linewidth=3)
+    plt.axvline(covid['date'].iloc[-1], linewidth=3)
 
     ax.set_ylim(0, 12000)
     ax.set_ylabel('Cases per day')
