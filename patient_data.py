@@ -47,7 +47,7 @@ def infection_predictor(df, end):
     current_value = df['average'].iloc[-1]
 
     prediction = pd.DataFrame(columns=['date', 'value'])
-    while current_day < end:
+    for _ in range(21):
         current_day = current_day + pd.Timedelta(days=1)
         current_value *= daily_change
         prediction.loc[len(prediction)] = [current_day] + [current_value]

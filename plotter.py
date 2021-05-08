@@ -20,14 +20,13 @@ def download_data():
     return r.json()
 
 
-def plot_save(light=True):
+def plot_save(data, light=True):
     """Plot all the data."""
     if light:
         pass
     else:
         plt.style.use('dark_background')
 
-    data = download_data()
     fig = plt.figure(figsize=(16, 10))
     plt.subplot(211)
     df = get_vaccinations(data)
@@ -85,6 +84,8 @@ def plot_save(light=True):
         ax.plot(covid_prediction['date'], covid_prediction['value'],
                 'w+', label='Infection prediction')
 
+        
+
     levels = [[6250, 'Zeer Ernstig'],
               [2500, 'Ernstig'],
               [875, 'Zorgelijk']]
@@ -109,7 +110,7 @@ def plot_save(light=True):
              ['2021-03-23', 'PersCo: Avondklok 10 uur'],
              ['2021-04-13', 'PersCo: Stappenplan'],
              ['2021-04-28', 'stap 1: terrassen'],
-             ['2021-05-11', 'stap 2: buiten locaties'],
+             ['2021-05-18', 'stap 2: buiten locaties (later)'],
              ['2021-05-26', 'stap 3: uit eten + binnen kunst'],
              ['2021-06-16', 'stap 4: evenementen'],
              ['2021-07-07', 'stap 5: binnen horeca']]
@@ -122,7 +123,7 @@ def plot_save(light=True):
     ax.set_ylim(0, 12000)
     ax.set_ylabel('Cases per day')
     ax2.set_ylabel('IC occupation per day', color='r')
-    ax2.set_ylim(0, 1100)
+    ax2.set_ylim(0, 1000)
     ax2.set_xlabel('Date')
     ax2.tick_params(axis='y', colors='red')
 
@@ -131,7 +132,7 @@ def plot_save(light=True):
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
-    ax2.axhline(1450 - ic_cap['beds_occupied_non_covid'], color='r',
+    ax2.axhline(1350 - ic_cap['beds_occupied_non_covid'], color='r',
                 linestyle='--', label='IC capacity for COVID')
 
     lines, labels = ax.get_legend_handles_labels()
@@ -145,5 +146,6 @@ def plot_save(light=True):
         plt.savefig('results_dark.svg')
 
 
-plot_save(light=True)
-plot_save(light=False)
+data = download_data()
+plot_save(data, light=True)
+plot_save(data, light=False)
