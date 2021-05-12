@@ -21,7 +21,27 @@ def get_vaccinations(data):
     return df
 
 
-def vaccination_prediction(df, type='exponential'):
+def get_target(data):
+    brand = {'astra_zeneca': 0,
+             'bio_n_tech_pfizer': 0,
+             'janssen': 0,
+             'moderna': 0}
+
+    for row in data['vaccine_delivery_per_supplier']['values']:
+        for key in brand:
+            brand[key] = brand[key] + row[key]
+
+    per_janssen = brand['janssen'] / sum(brand.values())
+
+    support = data['vaccine_support']['last_value']['percentage_average']
+    adults = 14_000_000
+    last_month = 6_000_000
+
+    total = (adults * (2 - per_janssen) * support / 100) - last_month
+    return total
+
+
+def vaccination_prediction(df, target, type='exponential'):
     """Predict the future vaccinations, uses only simple models."""
     last_week = df['value'][-8:-1].sum()
     week_before = df['value'][-15:-8].sum()
@@ -49,14 +69,12 @@ def vaccination_prediction(df, type='exponential'):
     growth = weekly_growth(df)
     weekly = weekly_model(df)
 
-    target = 18e6
-
     # exponential prediction
     prediction = pd.DataFrame(columns=['date', 'value'])
     while target > (prediction['value'].sum() + current_vac):
         next_day = current_day + pd.Timedelta(days=1)
         day_index = len(prediction) + current_index
-        weeks = (day_index - current_index) / 7
+        weeks = (day_index - current_index + 1) / 7
         if type == 'exponential':
             day_est = last_week * (growth)**(weeks) * weekly[day_index % 7]
         elif type == 'linear':
@@ -72,11 +90,10 @@ def vaccination_prediction(df, type='exponential'):
 
         if day_index > 500:
             break
-    print(prediction['value'].sum())
     return prediction
 
 
-def get_hugo(df):
+def get_hugo(df, target):
     """Get current prediction and vaccination targets."""
     current_vac = df['value'].sum()
     hugo = {}
@@ -88,7 +105,7 @@ def get_hugo(df):
     hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1] , end='2021-05-31')
     hugo['vacs_may'] = [(100e5 - current_vac) / (x := len(hugo['days_may']))] * x
     hugo['days_june'] = pd.date_range(start='2021-06-01', end='2021-06-30')
-    hugo['vacs_june'] = [(170e5 - 110e5) / (x := len(hugo['days_june']))] * x
+    hugo['vacs_june'] = [(target - 110e5) / (x := len(hugo['days_june']))] * x
     return hugo
 
 
