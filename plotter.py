@@ -73,6 +73,23 @@ def plot_save(data, light=True):
     plt.plot(future_deliveries['date'], future_deliveries['value'],
              ':', label='Vaccinations delivery estimation', linewidth=3)
 
+    steps = [['2021-01-06', 'zorg en instellingen'],
+             ['2021-01-26', '90+'],
+             ['2021-02-12', '80+'],
+             ['2021-02-15', '65-61 en hoog risico'],
+             ['2021-03-13', '75+'],
+             ['2021-04-06', '70+'],
+             ['2021-04-26', '65+'],
+             ['2021-05-01', '50+ en medische indicatie'],
+             ['2021-06-01', '40+ (schatting)'],
+             ['2021-06-15', '30+ (schatting)'],
+             ['2021-06-25', '20+ (schatting)'],
+             ['2021-07-01', '18+ (schatting)'],
+             ]
+
+    for step in steps:
+        plot_steps_gov(*step, plt, light, 200, 0.5)
+
     # Plotting the vaccination speed predicted by hugo de jonge
     plt.axvline(df['date'].iloc[-1], linewidth=3)
     plt.ylabel('Vaccinations per day')

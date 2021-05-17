@@ -123,10 +123,10 @@ def get_hugo(df, target):
                                      end='2021-05-31')
     hugo['vacs_may'] = [(100e5 - current_vac) /
                         (x := len(hugo['days_may']))] * x
-    hugo['days_june'] = pd.date_range(start='2021-06-01', end='2021-06-30')
-    hugo['vacs_june_rivm'] = [(target_r - 110e5) /
+    hugo['days_june'] = pd.date_range(start='2021-06-01', end='2021-07-07')
+    hugo['vacs_june_rivm'] = [(target_r - 100e5) /
                               (x := len(hugo['days_june']))] * x
-    hugo['vacs_june_wouter'] = [(target_w - 110e5) /
+    hugo['vacs_june_wouter'] = [(target_w - 100e5) /
                                 (x := len(hugo['days_june']))] * x
     return hugo
 

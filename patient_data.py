@@ -55,17 +55,23 @@ def infection_predictor(df, end):
     return prediction
 
 
-def plot_steps_gov(date, text, plt, light):
+def plot_steps_gov(date, text, plt, light, factor=1, alpha=1):
     """Help function for plotting opening steps."""
     if light:
         plt.axvline(nice_date := pd.to_datetime(date), color='tab:blue')
-        plt.text(nice_date + pd.Timedelta(days=1), 50, text,
-                 rotation=90, bbox={'facecolor': "white", 'linewidth': 0},
+        plt.text(nice_date + pd.Timedelta(days=1), 50*factor, text,
+                 rotation=90,
+                 bbox={'facecolor': "white",
+                       'linewidth': 0,
+                       'alpha': alpha},
                  color='tab:blue', size='small')
     else:
         plt.axvline(nice_date := pd.to_datetime(date), color='w')
-        plt.text(nice_date + pd.Timedelta(days=1), 50, text,
-                 rotation=90, bbox={'facecolor': "black", 'linewidth': 0},
+        plt.text(nice_date + pd.Timedelta(days=1), 50*factor, text,
+                 rotation=90,             
+                 bbox={'facecolor': "black",
+                       'linewidth': 0,
+                       'alpha': alpha},
                  color='w', size='small')
 
 
