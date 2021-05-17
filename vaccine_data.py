@@ -22,6 +22,7 @@ def get_vaccinations(data):
 
 
 def get_target(data):
+    """Estimate the target for everyone who wants first jab."""
     brand = {'astra_zeneca': 0,
              'bio_n_tech_pfizer': 0,
              'janssen': 0,
@@ -33,12 +34,27 @@ def get_target(data):
 
     per_janssen = brand['janssen'] / sum(brand.values())
 
-    support = data['vaccine_support']['last_value']['percentage_average']
+    support_rivm = data['vaccine_support']['last_value']['percentage_average']
+    url = "https://data.rivm.nl/covid-19/COVID-19_gedrag.csv"
+
+    data = pd.read_csv(url, sep=';')
+
+    data = data[data['Wave'] == max(data['Wave'])]
+    data = data[data['Region_name'] == 'Nederland']
+    data = data[data['Subgroup_category'] == 'Alle']
+    data = data[data['Indicator_category'] == 'Vaccinatiebereidheid']
+
+    positive = int(data[data['Indicator'] == 'Ja']['Value'])
+    negative = int(data[data['Indicator'] == 'Nee']['Value'])
+
+    support_wouter = positive / (positive + negative)
+
     adults = 14_000_000
     last_month = 6_000_000
 
-    total = (adults * (2 - per_janssen) * support / 100) - last_month
-    return total
+    total_wouter = (adults * (2 - per_janssen) * support_wouter) - last_month
+    total_rivm = (adults * (2 - per_janssen) * support_rivm / 100) - last_month
+    return (total_wouter, total_rivm)
 
 
 def vaccination_prediction(df, target, type='exponential'):
@@ -69,9 +85,11 @@ def vaccination_prediction(df, target, type='exponential'):
     growth = weekly_growth(df)
     weekly = weekly_model(df)
 
+    target_wouter, target_rivm = target
+
     # exponential prediction
-    prediction = pd.DataFrame(columns=['date', 'value'])
-    while target > (prediction['value'].sum() + current_vac):
+    prediction = pd.DataFrame(columns=['date', 'value', 'region'])
+    while target_wouter > (prediction['value'].sum() + current_vac):
         next_day = current_day + pd.Timedelta(days=1)
         day_index = len(prediction) + current_index
         weeks = (day_index - current_index + 1) / 7
@@ -85,11 +103,14 @@ def vaccination_prediction(df, target, type='exponential'):
         else:
             raise NotImplementedError
 
-        prediction.loc[day_index - current_index] = [next_day] + [day_est]
+        if target_rivm > (prediction['value'].sum() + current_vac):
+            region = 'rivm'
+        else:
+            region = 'wouter'
+
+        prediction.loc[day_index - current_index] = [next_day, day_est, region]
         current_day = prediction['date'].iloc[-1]
 
-        if day_index > 500:
-            break
     return prediction
 
 
@@ -97,15 +118,16 @@ def get_hugo(df, target):
     """Get current prediction and vaccination targets."""
     current_vac = df['value'].sum()
     hugo = {}
-    # hugo['days_april'] = pd.date_range(start=df['date'].iloc[-1],
-    #                                    end='2021-04-30')
-    # hugo['vacs_april'] = [(50e5 - current_vac) /
-    #                       (x := len(hugo['days_april']))] * x
-    # hugo['days_may'] = pd.date_range(start='2021-05-01', end='2021-05-31')
-    hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1] , end='2021-05-31')
-    hugo['vacs_may'] = [(100e5 - current_vac) / (x := len(hugo['days_may']))] * x
+    target_w, target_r = target
+    hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1],
+                                     end='2021-05-31')
+    hugo['vacs_may'] = [(100e5 - current_vac) /
+                        (x := len(hugo['days_may']))] * x
     hugo['days_june'] = pd.date_range(start='2021-06-01', end='2021-06-30')
-    hugo['vacs_june'] = [(target - 110e5) / (x := len(hugo['days_june']))] * x
+    hugo['vacs_june_rivm'] = [(target_r - 110e5) /
+                              (x := len(hugo['days_june']))] * x
+    hugo['vacs_june_wouter'] = [(target_w - 110e5) /
+                                (x := len(hugo['days_june']))] * x
     return hugo
 
 

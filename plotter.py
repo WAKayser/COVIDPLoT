@@ -37,16 +37,31 @@ def plot_save(data, light=True):
     #          label='Extrapolate exponential')
 
     target = get_target(data)
+
     linear = vaccination_prediction(df, target, type='linear')
-    plt.plot(linear['date'], linear['value'], label='Extrapolate linear')
+    plt.plot(linear[linear['region'] == 'rivm']['date'],
+             linear[linear['region'] == 'rivm']['value'],
+             label='Extrapolate linear RIVM')
+
+    plt.plot(linear[linear['region'] == 'wouter']['date'],
+             linear[linear['region'] == 'wouter']['value'],
+             label='Extrapolate linear wouter')
 
     same = vaccination_prediction(df, target, type='no_growth')
-    plt.plot(same['date'], same['value'], label='Extrapolate same')
+    plt.plot(same[same['region'] == 'rivm']['date'],
+             same[same['region'] == 'rivm']['value'],
+             label='Extrapolate same RIVM')
+    plt.plot(same[same['region'] == 'wouter']['date'],
+             same[same['region'] == 'wouter']['value'],
+             label='Extrapolate same wouter')
 
     hugo = get_hugo(df, target)
     # plt.plot(hugo['days_april'], hugo['vacs_april'], label='April tempo')
     plt.plot(hugo['days_may'], hugo['vacs_may'], label='May tempo')
-    plt.plot(hugo['days_june'], hugo['vacs_june'], label='June tempo')
+    plt.plot(hugo['days_june'], hugo['vacs_june_rivm'],
+             label='June tempo rivm')
+    plt.plot(hugo['days_june'], hugo['vacs_june_wouter'],
+             label='June tempo wouter')
 
     current_week = get_week_planning(data)
     plt.plot(current_week['date'], current_week['value'],
@@ -63,9 +78,12 @@ def plot_save(data, light=True):
     plt.ylabel('Vaccinations per day')
     plt.xlabel('Date')
     plt.ylim(bottom=0)
-    plt.xlim(pd.to_datetime('2021-01-01'), same['date'].iloc[-1])
+
+    last_month = max(same['date']).month + 1
+    x_end = pd.to_datetime(f'2021-0{last_month}-01')
+    plt.xlim(pd.to_datetime('2021-01-01'), x_end)
     plt.title('Vaccinations per day as predicted by past or Hugo de Jonge')
-    plt.legend()
+    plt.legend(loc='upper left')
 
     ax = plt.subplot(212)
 
@@ -127,7 +145,7 @@ def plot_save(data, light=True):
     ax2.tick_params(axis='y', colors='red')
 
     plt.title('COVID-19 Cases and IC occupation plus stappenplan')
-    plt.xlim(pd.to_datetime('2021-01-01'), same['date'].iloc[-1])
+    plt.xlim(pd.to_datetime('2021-01-01'), x_end)
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
