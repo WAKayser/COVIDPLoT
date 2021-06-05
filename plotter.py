@@ -36,16 +36,22 @@ def plot_save(data, light=True):
     # plt.plot(exponential['date'], exponential['value'],
     #          label='Extrapolate exponential')
 
-    target = get_target(data)
+    target = get_target(data, df)
 
     linear = vaccination_prediction(df, target, type='linear')
     plt.plot(linear[linear['region'] == 'rivm']['date'],
              linear[linear['region'] == 'rivm']['value'],
              label='Extrapolate linear RIVM')
-
     plt.plot(linear[linear['region'] == 'wouter']['date'],
              linear[linear['region'] == 'wouter']['value'],
              label='Extrapolate linear wouter')
+
+    plt.plot(linear[linear['region'] == 'rivm full']['date'],
+             linear[linear['region'] == 'rivm full']['value'],
+             label='Extrapolate linear RIVM full')
+    plt.plot(linear[linear['region'] == 'wouter full']['date'],
+             linear[linear['region'] == 'wouter full']['value'],
+             label='Extrapolate linear wouter full')
 
     same = vaccination_prediction(df, target, type='no_growth')
     plt.plot(same[same['region'] == 'rivm']['date'],
@@ -55,13 +61,22 @@ def plot_save(data, light=True):
              same[same['region'] == 'wouter']['value'],
              label='Extrapolate same wouter')
 
+    plt.plot(same[same['region'] == 'rivm full']['date'],
+             same[same['region'] == 'rivm full']['value'],
+             label='Extrapolate same RIVM full')
+    plt.plot(same[same['region'] == 'wouter full']['date'],
+             same[same['region'] == 'wouter full']['value'],
+             label='Extrapolate same wouter full')
+
     hugo = get_hugo(df, target)
     # plt.plot(hugo['days_april'], hugo['vacs_april'], label='April tempo')
-    plt.plot(hugo['days_may'], hugo['vacs_may'], label='May tempo')
+    # plt.plot(hugo['days_may'], hugo['vacs_may'], label='May tempo')
     plt.plot(hugo['days_june'], hugo['vacs_june_rivm'],
-             label='June tempo rivm')
+             label='First jabs rivm')
     plt.plot(hugo['days_june'], hugo['vacs_june_wouter'],
-             label='June tempo wouter')
+             label='First jabs wouter')
+    plt.plot(hugo['days_last'], hugo['vacs_last_set'],
+             label='Last jabs tempo')
 
     current_week = get_week_planning(data)
     plt.plot(current_week['date'], current_week['value'],
@@ -73,7 +88,7 @@ def plot_save(data, light=True):
     plt.plot(future_deliveries['date'], future_deliveries['value'],
              ':', label='Vaccinations delivery estimation', linewidth=3)
 
-    steps = [['2021-01-06', 'zorg en instellingen'],
+    steps = [['2021-01-06', 'Zorg en instellingen'],
              ['2021-01-26', '90+'],
              ['2021-02-12', '80+'],
              ['2021-02-15', '65-61 en hoog risico'],
@@ -81,10 +96,11 @@ def plot_save(data, light=True):
              ['2021-04-06', '70+'],
              ['2021-04-26', '65+'],
              ['2021-05-01', '50+ en medische indicatie'],
-             ['2021-06-01', '40+ (schatting)'],
-             ['2021-06-15', '30+ (schatting)'],
-             ['2021-06-25', '20+ (schatting)'],
-             ['2021-07-01', '18+ (schatting)'],
+             ['2021-05-25', '40+'],
+             ['2021-06-02', '30+ '],
+             ['2021-06-15', '18+ (schatting)'],
+             ['2021-07-07', 'Iedereen eerste prik'],
+             ['2021-09-01', 'Iedereen volledig'],
              ]
 
     for step in steps:
@@ -96,8 +112,9 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0)
 
-    last_month = max(same['date']).month + 1
-    x_end = pd.to_datetime(f'2021-0{last_month}-01')
+    last_month = max(max(same['date']).month + 1, 9)
+    last_month = '{:02d}'.format(last_month)
+    x_end = pd.to_datetime(f'2021-{last_month}-01')
     plt.xlim(pd.to_datetime('2021-01-01'), x_end)
     plt.title('Vaccinations per day as predicted by past or Hugo de Jonge')
     plt.legend(loc='upper left')
@@ -143,11 +160,11 @@ def plot_save(data, light=True):
              ['2021-03-08', 'PersCo: beetje versoepelen'],
              ['2021-03-23', 'PersCo: Avondklok 10 uur'],
              ['2021-04-13', 'PersCo: Stappenplan'],
-             ['2021-04-28', 'stap 1: terrassen'],
-             ['2021-05-18', 'stap 2: buiten locaties'],
-             ['2021-06-09', 'stap 3: uit eten + binnen cultuur'],
-             ['2021-06-16', 'stap 4: evenementen'],
-             ['2021-07-07', 'stap 5: binnen horeca']]
+             ['2021-04-28', 'Stap 1: terrassen'],
+             ['2021-05-18', 'Stap 2: buiten locaties'],
+             ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
+             ['2021-06-30', 'Stap 4: Minder voorwaarden + disco'],
+             ['2021-09-01', 'Stap 5: Einde maatregelen']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)

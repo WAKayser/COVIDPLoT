@@ -21,8 +21,11 @@ def get_vaccinations(data):
     return df
 
 
-def get_target(data):
+def get_target(data, df):
     """Estimate the target for everyone who wants first jab."""
+    adults = 14_000_000
+    week_window = 6
+
     brand = {'astra_zeneca': 0,
              'bio_n_tech_pfizer': 0,
              'janssen': 0,
@@ -34,7 +37,17 @@ def get_target(data):
 
     per_janssen = brand['janssen'] / sum(brand.values())
 
-    support_rivm = data['vaccine_support']['last_value']['percentage_average']
+    test_data = data['tested_overall']['values']
+
+    had_covid = 0
+
+    for row in test_data:
+        if date.fromtimestamp(row['date_unix']).year == 2021:
+            had_covid += row['infected']
+
+    per_covid = had_covid / adults
+
+    support_rivm = data['vaccine_vaccinated_or_support']['last_value']['percentage_average']
     url = "https://data.rivm.nl/covid-19/COVID-19_gedrag.csv"
 
     data = pd.read_csv(url, sep=';')
@@ -49,12 +62,16 @@ def get_target(data):
 
     support_wouter = positive / (positive + negative)
 
-    adults = 14_000_000
-    last_month = 6_000_000
+    full_group = int(adults * (2 - per_janssen - per_covid))
+    group_wouter = int(full_group * support_wouter)
+    group_rivm = int(full_group * support_rivm / 100)
 
-    total_wouter = (adults * (2 - per_janssen) * support_wouter) - last_month
-    total_rivm = (adults * (2 - per_janssen) * support_rivm / 100) - last_month
-    return (total_wouter, total_rivm)
+    last_period = int(sum(df[-15:-1]['value']) * week_window / 2)
+
+    first_wouter = group_wouter - last_period
+    first_rivm = group_rivm - last_period
+
+    return first_wouter, first_rivm, group_wouter, group_rivm
 
 
 def vaccination_prediction(df, target, type='exponential'):
@@ -85,11 +102,11 @@ def vaccination_prediction(df, target, type='exponential'):
     growth = weekly_growth(df)
     weekly = weekly_model(df)
 
-    target_wouter, target_rivm = target
+    target_wouter, target_rivm, full_wouter, full_rivm = target
 
     # exponential prediction
     prediction = pd.DataFrame(columns=['date', 'value', 'region'])
-    while target_wouter > (prediction['value'].sum() + current_vac):
+    while full_wouter > (prediction['value'].sum() + current_vac):
         next_day = current_day + pd.Timedelta(days=1)
         day_index = len(prediction) + current_index
         weeks = (day_index - current_index + 1) / 7
@@ -105,8 +122,15 @@ def vaccination_prediction(df, target, type='exponential'):
 
         if target_rivm > (prediction['value'].sum() + current_vac):
             region = 'rivm'
-        else:
+        elif target_wouter > (prediction['value'].sum() + current_vac):
             region = 'wouter'
+        elif full_rivm > (prediction['value'].sum() + current_vac):
+            region = 'rivm full'
+        else:
+            region = 'wouter full'
+
+        if day_index > 300:
+            break
 
         prediction.loc[day_index - current_index] = [next_day, day_est, region]
         current_day = prediction['date'].iloc[-1]
@@ -118,16 +142,23 @@ def get_hugo(df, target):
     """Get current prediction and vaccination targets."""
     current_vac = df['value'].sum()
     hugo = {}
-    target_w, target_r = target
-    hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1],
-                                     end='2021-05-31')
-    hugo['vacs_may'] = [(100e5 - current_vac) /
-                        (x := len(hugo['days_may']))] * x
-    hugo['days_june'] = pd.date_range(start='2021-06-01', end='2021-07-07')
-    hugo['vacs_june_rivm'] = [(target_r - 100e5) /
+    target_wouter, target_rivm, full_wouter, full_rivm = target
+    # hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1],
+    #                                  end='2021-05-31')
+    # hugo['vacs_may'] = [(100e5 - current_vac) /
+    #                     (x := len(hugo['days_may']))] * x
+    hugo['days_june'] = pd.date_range(start=df['date'].iloc[-1],
+                                      end='2021-07-07')
+    hugo['vacs_june_rivm'] = [(target_rivm - current_vac) /
                               (x := len(hugo['days_june']))] * x
-    hugo['vacs_june_wouter'] = [(target_w - 100e5) /
+    hugo['vacs_june_wouter'] = [(target_wouter - current_vac) /
                                 (x := len(hugo['days_june']))] * x
+
+    hugo['days_last'] = pd.date_range(start='2021-07-07',
+                                      end='2021-09-01')
+    hugo['vacs_last_set'] = [(full_rivm - target_rivm) /
+                             (x := len(hugo['days_last']))] * x
+
     return hugo
 
 
