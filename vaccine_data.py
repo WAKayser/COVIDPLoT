@@ -42,10 +42,9 @@ def get_target(data, df):
     had_covid = 0
 
     for row in test_data:
-        if date.fromtimestamp(row['date_unix']).year == 2021:
-            had_covid += row['infected']
+        had_covid = sum(row['infected'])
 
-    per_covid = had_covid / adults
+    per_covid = 0.8 * had_covid / adults
 
     support_rivm = data['vaccine_vaccinated_or_support']['last_value']['percentage_average']
     url = "https://data.rivm.nl/covid-19/COVID-19_gedrag.csv"
