@@ -42,7 +42,7 @@ def get_target(data, df):
     had_covid = 0
 
     for row in test_data:
-        had_covid = sum(row['infected'])
+        had_covid += row['infected']
 
     per_covid = 0.8 * had_covid / adults
 
