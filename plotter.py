@@ -97,8 +97,9 @@ def plot_save(data, light=True):
              ['2021-04-26', '65+'],
              ['2021-05-01', '50+ en medische indicatie'],
              ['2021-05-25', '40+'],
-             ['2021-06-02', '30+ '],
-             ['2021-06-15', '18+ (schatting)'],
+             ['2021-06-02', '30+'],
+             ['2021-06-10', '18+'],
+             ['2021-06-21', 'Iedereen mag Janssen'],
              ['2021-07-07', 'Iedereen eerste prik'],
              ['2021-09-01', 'Iedereen volledig'],
              ]
