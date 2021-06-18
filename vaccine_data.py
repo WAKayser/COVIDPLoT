@@ -24,7 +24,7 @@ def get_vaccinations(data):
 def get_target(data, df):
     """Estimate the target for everyone who wants first jab."""
     adults = 14_000_000
-    week_window = 6
+    week_window = 4
 
     brand = {'astra_zeneca': 0,
              'bio_n_tech_pfizer': 0,
