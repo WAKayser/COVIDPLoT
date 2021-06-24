@@ -131,6 +131,9 @@ def vaccination_prediction(df, target, type='exponential'):
         if day_index > 300:
             break
 
+        if day_est < 0:
+            break
+
         prediction.loc[day_index - current_index] = [next_day, day_est, region]
         current_day = prediction['date'].iloc[-1]
 
