@@ -35,7 +35,9 @@ def get_ic_cases(data):
     df = pd.DataFrame(list(zip(dates, patient)),
                       columns=['date', 'value'])
     df['date'] = df['date'].astype('datetime64[ns]')
+    df = df.interpolate()
     df['average'] = df['value'].rolling(window=7).mean()
+
     return df
 
 
