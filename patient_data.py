@@ -17,6 +17,7 @@ def get_covid_cases(data):
     df = pd.DataFrame(list(zip(dates, infection)),
                       columns=['date', 'value'])
     df['date'] = df['date'].astype('datetime64[ns]')
+    df = df.sort_values(by='date')
     df['average'] = df['value'].rolling(window=7).mean()
     return df
 
@@ -57,7 +58,7 @@ def infection_predictor(df, end):
     return prediction
 
 
-def plot_steps_gov(date, text, plt, light, factor=1, alpha=1):
+def plot_steps_gov(date, text, plt, light, factor=1, alpha=0.5):
     """Help function for plotting opening steps."""
     if light:
         plt.axvline(nice_date := pd.to_datetime(date), color='tab:blue')
