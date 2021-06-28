@@ -59,7 +59,8 @@ def get_target(data, df):
     positive = int(data[data['Indicator'] == 'Ja']['Value'])
     negative = int(data[data['Indicator'] == 'Nee']['Value'])
 
-    support_wouter = positive / (positive + negative)
+    # support_wouter = positive / (positive + negative)
+    support_wouter = 90 / (90 + 4.8)
 
     full_group = int(adults * (2 - per_janssen - per_covid))
     group_wouter = int(full_group * support_wouter)
