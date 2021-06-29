@@ -41,32 +41,32 @@ def plot_save(data, light=True):
     linear = vaccination_prediction(df, target, type='linear')
     plt.plot(linear[linear['region'] == 'rivm']['date'],
              linear[linear['region'] == 'rivm']['value'],
-             label='Extrapolate linear RIVM')
+             label='Predict linear RIVM adult first')
     plt.plot(linear[linear['region'] == 'wouter']['date'],
              linear[linear['region'] == 'wouter']['value'],
-             label='Extrapolate linear wouter')
+             label='Predict linear wouter adult first')
 
     plt.plot(linear[linear['region'] == 'rivm full']['date'],
              linear[linear['region'] == 'rivm full']['value'],
-             label='Extrapolate linear RIVM full')
+             label='Predict linear RIVM full')
     plt.plot(linear[linear['region'] == 'wouter full']['date'],
              linear[linear['region'] == 'wouter full']['value'],
-             label='Extrapolate linear wouter full')
+             label='Predict linear wouter full')
 
     same = vaccination_prediction(df, target, type='no_growth')
     plt.plot(same[same['region'] == 'rivm']['date'],
              same[same['region'] == 'rivm']['value'],
-             label='Extrapolate same RIVM')
+             label='Predict same RIVM adult first')
     plt.plot(same[same['region'] == 'wouter']['date'],
              same[same['region'] == 'wouter']['value'],
-             label='Extrapolate same wouter')
+             label='Predict same wouter adult first')
 
     plt.plot(same[same['region'] == 'rivm full']['date'],
              same[same['region'] == 'rivm full']['value'],
-             label='Extrapolate same RIVM full')
+             label='Predict same RIVM 12+ full')
     plt.plot(same[same['region'] == 'wouter full']['date'],
              same[same['region'] == 'wouter full']['value'],
-             label='Extrapolate same wouter full')
+             label='Predict same wouter 12+ full')
 
     hugo = get_hugo(df, target)
     # plt.plot(hugo['days_april'], hugo['vacs_april'], label='April tempo')
