@@ -71,7 +71,10 @@ def get_target(data, df):
     first_wouter = group_wouter - last_period
     first_rivm = group_rivm - last_period
 
-    return first_wouter, first_rivm, group_wouter, group_rivm
+    full_wouter = group_wouter + (0.85 * 2 * 1_200_000)
+    full_rivm = group_rivm + (0.85 * 2 * 1_200_000)
+
+    return first_wouter, first_rivm, full_wouter, full_rivm
 
 
 def vaccination_prediction(df, target, type='exponential'):

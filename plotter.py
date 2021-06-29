@@ -76,7 +76,7 @@ def plot_save(data, light=True):
     plt.plot(hugo['days_june'], hugo['vacs_june_wouter'],
              label='First jabs wouter')
     plt.plot(hugo['days_last'], hugo['vacs_last_set'],
-             label='Last jabs tempo')
+             label='12+ full tempo')
 
     current_week = get_week_planning(data)
     plt.plot(current_week['date'], current_week['value'],
