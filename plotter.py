@@ -123,7 +123,7 @@ def plot_save(data, light=True):
     ax = plt.subplot(212)
 
     covid = get_covid_cases(data)
-    covid_prediction = infection_predictor(covid, same['date'].iloc[-1])
+    covid_prediction = infection_predictor(covid, same['date'].iloc[-1], data)
 
     if light:
         ax.plot(covid['date'], covid['value'], label='Infections', color='k')
@@ -131,12 +131,16 @@ def plot_save(data, light=True):
                 color='k', linewidth=3)
         ax.plot(covid_prediction['date'], covid_prediction['value'],
                 'k+', label='Infection prediction')
+        ax.plot(covid_prediction['date'], covid_prediction['delta'],
+                'k+', label='Infection prediction Delta', alpha=0.5)
     else:
         ax.plot(covid['date'], covid['value'], label='Infections', color='w')
         ax.plot(covid['date'], covid['average'], label='Average infections',
                 color='w', linewidth=3)
         ax.plot(covid_prediction['date'], covid_prediction['value'],
                 'w+', label='Infection prediction')
+        ax.plot(covid_prediction['date'], covid_prediction['delta'],
+                'w+', label='Infection prediction Delta', alpha=0.5)
 
     levels = [[6250, 'Zeer Ernstig'],
               [2500, 'Ernstig'],
@@ -150,7 +154,7 @@ def plot_save(data, light=True):
     ax2.plot(ICs['date'], ICs['value'], label='IC occupation', color='r')
     ax2.plot(ICs['date'], ICs['average'], label='Average IC occupation',
              color='r', linewidth=3)
-    ic_prediction = infection_predictor(ICs, same['date'].iloc[-1])
+    ic_prediction = infection_predictor(ICs, same['date'].iloc[-1], data)
     ax2.plot(ic_prediction['date'], ic_prediction['value'],
              'r+', label='IC prediction')
 
