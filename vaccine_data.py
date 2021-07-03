@@ -42,7 +42,9 @@ def get_target(data, df):
     had_covid = 0
 
     for row in test_data:
-        had_covid += row['infected']
+        if date.fromtimestamp(row['date_unix']).year == 2021:
+            if date.fromtimestamp(row['date_unix']).month > 1:
+                had_covid += row['infected']
 
     per_covid = 0.8 * had_covid / adults
 
@@ -66,13 +68,13 @@ def get_target(data, df):
     group_wouter = int(full_group * support_wouter)
     group_rivm = int(full_group * support_rivm / 100)
 
-    last_period = int(sum(df[-15:-1]['value']) * week_window / 2)
+    last_period = int(sum(df[-29:-1]['value']))
 
     first_wouter = group_wouter - last_period
     first_rivm = group_rivm - last_period
 
-    full_wouter = group_wouter + (0.85 * 2 * 1_200_000)
-    full_rivm = group_rivm + (0.85 * 2 * 1_200_000)
+    full_wouter = group_wouter + (0.72 * 2 * 1_200_000)
+    full_rivm = group_rivm + (0.72 * 2 * 1_200_000)
 
     return first_wouter, first_rivm, full_wouter, full_rivm
 

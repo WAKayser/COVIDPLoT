@@ -44,21 +44,24 @@ def get_ic_cases(data):
 
 def infection_predictor(df, end, data):
     """Predict the number of patients with a to simple R like calculation."""
+    new_vax = data['vaccine_administered_planned']['values'][0]
+    per_vax_new = 1 - (new_vax['doses'] * 3 / 2 / 15_200_000)
+
     weekly_change = df['average'].iloc[-1] / df['average'].iloc[-8]
-    daily_change = weekly_change**(1/7)
+    daily_change = weekly_change**(1/7) * per_vax_new**(1/7)
 
     freshness = date.fromtimestamp(data['variants']['last_value']['date_end_unix'])
     variant_data = data['variants']['last_value']['delta_percentage'] / 100
 
     gap = date.today() - freshness
-    weeks_old = gap.days / 7
+    weeks_old = (gap.days / 7) - 1
 
     # percentage of extra delta variant estimated by end of 3 week prediction
-    now_delta = min(variant_data + 0.1 * weeks_old, 1)
-    soon_delta = min(now_delta + (3 * 0.15), 1)
+    now_delta = min(variant_data + 0.15 * weeks_old, 1)
+    soon_delta = min(now_delta + (3 * 0.2), 1)
 
-    raw_r = daily_change / (1.3**(1/7) * now_delta + (1-now_delta))
-    delta_change = raw_r * (1.3**(1/7) * soon_delta + (1-soon_delta))
+    raw_r = daily_change / (1.5**(1/7) * now_delta + (1-now_delta))
+    delta_change = raw_r * (1.5**(1/7) * soon_delta + (1-soon_delta))
 
     current_day = df['date'].iloc[-1]
     value = df['average'].iloc[-1]

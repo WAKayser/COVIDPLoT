@@ -32,10 +32,6 @@ def plot_save(data, light=True):
     df = get_vaccinations(data)
     plt.plot(df['date'], df['value'], label='vaccinated')
 
-    # exponential = vaccination_prediction(df, type='exponential')
-    # plt.plot(exponential['date'], exponential['value'],
-    #          label='Extrapolate exponential')
-
     target = get_target(data, df)
 
     linear = vaccination_prediction(df, target, type='linear')
