@@ -65,13 +65,7 @@ def plot_save(data, light=True):
              label='Predict same wouter 12+ full')
 
     hugo = get_hugo(df, target)
-    # plt.plot(hugo['days_april'], hugo['vacs_april'], label='April tempo')
-    # plt.plot(hugo['days_may'], hugo['vacs_may'], label='May tempo')
-    plt.plot(hugo['days_june'], hugo['vacs_june_rivm'],
-             label='First jabs rivm')
-    plt.plot(hugo['days_june'], hugo['vacs_june_wouter'],
-             label='First jabs wouter')
-    plt.plot(hugo['days_last'], hugo['vacs_last_set'],
+    plt.plot(hugo['days_last'], hugo['vacs_last'],
              label='12+ full tempo')
 
     current_week = get_week_planning(data)
@@ -96,7 +90,7 @@ def plot_save(data, light=True):
              ['2021-06-02', '30+'],
              ['2021-06-10', '18+'],
              ['2021-06-23', 'Iedereen mag Janssen'],
-             ['2021-07-07', 'Iedereen eerste prik'],
+             ['2021-07-07', '18+ eerste prik'],
              ['2021-09-01', 'Iedereen volledig'],
              ]
 

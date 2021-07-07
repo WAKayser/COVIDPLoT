@@ -151,21 +151,11 @@ def get_hugo(df, target):
     current_vac = df['value'].sum()
     hugo = {}
     target_wouter, target_rivm, full_wouter, full_rivm = target
-    # hugo['days_may'] = pd.date_range(start=df['date'].iloc[-1],
-    #                                  end='2021-05-31')
-    # hugo['vacs_may'] = [(100e5 - current_vac) /
-    #                     (x := len(hugo['days_may']))] * x
-    hugo['days_june'] = pd.date_range(start=df['date'].iloc[-1],
-                                      end='2021-07-07')
-    hugo['vacs_june_rivm'] = [(target_rivm - current_vac) /
-                              (x := len(hugo['days_june']))] * x
-    hugo['vacs_june_wouter'] = [(target_wouter - current_vac) /
-                                (x := len(hugo['days_june']))] * x
 
-    hugo['days_last'] = pd.date_range(start='2021-07-07',
+    hugo['days_last'] = pd.date_range(start=df['date'].iloc[-1],
                                       end='2021-09-01')
-    hugo['vacs_last_set'] = [(full_rivm - target_rivm) /
-                             (x := len(hugo['days_last']))] * x
+    hugo['vacs_last'] = [(full_rivm - current_vac) /
+                         (x := len(hugo['days_last']))] * x
 
     return hugo
 
