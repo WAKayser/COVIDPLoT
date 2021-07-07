@@ -98,7 +98,7 @@ def plot_save(data, light=True):
         plot_steps_gov(*step, plt, light, 200, 0.5)
 
     # Plotting the vaccination speed predicted by hugo de jonge
-    plt.axvline(df['date'].iloc[-1], linewidth=3)
+    # plt.axvline(df['date'].iloc[-1], linewidth=3)
     plt.ylabel('Vaccinations per day')
     plt.xlabel('Date')
     plt.ylim(bottom=0)
@@ -164,7 +164,7 @@ def plot_save(data, light=True):
     for step in steps:
         plot_steps_gov(*step, plt, light)
 
-    plt.axvline(covid['date'].iloc[-1], linewidth=3)
+    # plt.axvline(covid['date'].iloc[-1], linewidth=3)
 
     ax.set_ylim(0, 10000)
     ax.set_ylabel('Cases per day')
