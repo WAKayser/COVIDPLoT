@@ -35,34 +35,26 @@ def plot_save(data, light=True):
     target = get_target(data, df)
 
     linear = vaccination_prediction(df, target, type='linear')
-    plt.plot(linear[linear['region'] == 'rivm']['date'],
-             linear[linear['region'] == 'rivm']['value'],
-             label='Predict linear RIVM adult first')
-    plt.plot(linear[linear['region'] == 'wouter']['date'],
-             linear[linear['region'] == 'wouter']['value'],
-             label='Predict linear wouter adult first')
-
-    plt.plot(linear[linear['region'] == 'rivm full']['date'],
-             linear[linear['region'] == 'rivm full']['value'],
-             label='Predict linear RIVM full')
-    plt.plot(linear[linear['region'] == 'wouter full']['date'],
-             linear[linear['region'] == 'wouter full']['value'],
-             label='Predict linear wouter full')
+    plt.plot(linear[linear['region'] == 'first']['date'],
+             linear[linear['region'] == 'first']['value'],
+             label='Predict linear adult first')
+    plt.plot(linear[linear['region'] == 'adults']['date'],
+             linear[linear['region'] == 'adults']['value'],
+             label='Predict linear adults full')
+    plt.plot(linear[linear['region'] == 'kids']['date'],
+             linear[linear['region'] == 'kids']['value'],
+             label='Predict linear 12+ full')
 
     same = vaccination_prediction(df, target, type='no_growth')
-    plt.plot(same[same['region'] == 'rivm']['date'],
-             same[same['region'] == 'rivm']['value'],
-             label='Predict same RIVM adult first')
-    plt.plot(same[same['region'] == 'wouter']['date'],
-             same[same['region'] == 'wouter']['value'],
-             label='Predict same wouter adult first')
-
-    plt.plot(same[same['region'] == 'rivm full']['date'],
-             same[same['region'] == 'rivm full']['value'],
-             label='Predict same RIVM 12+ full')
-    plt.plot(same[same['region'] == 'wouter full']['date'],
-             same[same['region'] == 'wouter full']['value'],
-             label='Predict same wouter 12+ full')
+    plt.plot(same[same['region'] == 'first']['date'],
+             same[same['region'] == 'first']['value'],
+             label='Predict same adult first')
+    plt.plot(same[same['region'] == 'adults']['date'],
+             same[same['region'] == 'adults']['value'],
+             label='Predict same adults full')
+    plt.plot(same[same['region'] == 'kids']['date'],
+             same[same['region'] == 'kids']['value'],
+             label='Predict same 12+ full')
 
     hugo = get_hugo(df, target)
     plt.plot(hugo['days_last'], hugo['vacs_last'],
@@ -113,7 +105,7 @@ def plot_save(data, light=True):
     ax = plt.subplot(212)
 
     covid = get_covid_cases(data)
-    covid_prediction = infection_predictor(covid, same['date'].iloc[-1], data)
+    covid_prediction = infection_predictor(covid, same['date'].iloc[-1], data, shift=3)
 
     if light:
         ax.plot(covid['date'], covid['value'], label='Infections', color='k')
@@ -125,7 +117,7 @@ def plot_save(data, light=True):
                 'k+', label='Infection prediction Delta', alpha=0.5)
     else:
         ax.plot(covid['date'], covid['value'], label='Infections', color='w')
-        ax.plot(covid['date'], covid['average'], label='Average infections',
+        ax.plot(covid['date'][:-3], covid['average'][3:], label='Average infections',
                 color='w', linewidth=3)
         ax.plot(covid_prediction['date'], covid_prediction['value'],
                 'w+', label='Infection prediction')

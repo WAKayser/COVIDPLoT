@@ -62,7 +62,7 @@ def get_target(data, df):
     negative = int(data[data['Indicator'] == 'Nee']['Value'])
 
     # support_wouter = positive / (positive + negative)
-    support_wouter = 90 / (90 + 4.8)
+    support_wouter = 94.3 / (94.3 + 3.8)
 
     full_group = int(adults * (2 - per_janssen - per_covid))
     group_wouter = int(full_group * support_wouter)
@@ -71,12 +71,13 @@ def get_target(data, df):
     last_period = int(sum(df[-29:-1]['value']))
 
     first_wouter = group_wouter - last_period
-    first_rivm = group_rivm - last_period
+    # first_rivm = group_rivm - last_period
+    adults_full = group_wouter
 
-    full_wouter = group_wouter + (0.72 * 2 * 1_200_000)
-    full_rivm = group_rivm + (0.72 * 2 * 1_200_000)
+    kids_full = group_wouter + (0.72 * 2 * 1_200_000)
+    # full_rivm = group_rivm + (0.72 * 2 * 1_200_000)
 
-    return first_wouter, first_rivm, full_wouter, full_rivm
+    return first_wouter, adults_full, kids_full
 
 
 def vaccination_prediction(df, target, type='exponential'):
@@ -107,11 +108,11 @@ def vaccination_prediction(df, target, type='exponential'):
     growth = weekly_growth(df)
     weekly = weekly_model(df)
 
-    target_wouter, target_rivm, full_wouter, full_rivm = target
+    first_wouter, adults_full, kids_full = target
 
     # exponential prediction
     prediction = pd.DataFrame(columns=['date', 'value', 'region'])
-    while full_wouter > (prediction['value'].sum() + current_vac):
+    while kids_full > (prediction['value'].sum() + current_vac):
         next_day = current_day + pd.Timedelta(days=1)
         day_index = len(prediction) + current_index
         weeks = (day_index - current_index + 1) / 7
@@ -125,14 +126,12 @@ def vaccination_prediction(df, target, type='exponential'):
         else:
             raise NotImplementedError
 
-        if target_rivm > (prediction['value'].sum() + current_vac):
-            region = 'rivm'
-        elif target_wouter > (prediction['value'].sum() + current_vac):
-            region = 'wouter'
-        elif full_rivm > (prediction['value'].sum() + current_vac):
-            region = 'rivm full'
+        if first_wouter > (prediction['value'].sum() + current_vac):
+            region = 'first'
+        elif adults_full > (prediction['value'].sum() + current_vac):
+            region = 'adults'
         else:
-            region = 'wouter full'
+            region = 'kids'
 
         if day_index > 300:
             break
@@ -150,11 +149,11 @@ def get_hugo(df, target):
     """Get current prediction and vaccination targets."""
     current_vac = df['value'].sum()
     hugo = {}
-    target_wouter, target_rivm, full_wouter, full_rivm = target
+    first, adults, kids = target
 
     hugo['days_last'] = pd.date_range(start=df['date'].iloc[-1],
                                       end='2021-09-01')
-    hugo['vacs_last'] = [(full_rivm - current_vac) /
+    hugo['vacs_last'] = [(adults - current_vac) /
                          (x := len(hugo['days_last']))] * x
 
     return hugo
