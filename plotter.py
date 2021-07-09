@@ -109,7 +109,7 @@ def plot_save(data, light=True):
 
     if light:
         ax.plot(covid['date'], covid['value'], label='Infections', color='k')
-        ax.plot(covid['date'], covid['average'], label='Average infections',
+        ax.plot(covid['date'][:-3], covid['average'][3:], label='Average infections',
                 color='k', linewidth=3)
         ax.plot(covid_prediction['date'], covid_prediction['value'],
                 'k+', label='Infection prediction')
@@ -151,6 +151,7 @@ def plot_save(data, light=True):
              ['2021-05-18', 'Stap 2: buiten locaties'],
              ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
+             ['2021-07-09', 'Oeps: Stop met feesten'],
              ['2021-09-01', 'Stap 5: Einde maatregelen']]
 
     for step in steps:
