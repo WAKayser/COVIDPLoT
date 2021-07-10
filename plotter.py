@@ -159,7 +159,7 @@ def plot_save(data, light=True):
 
     # plt.axvline(covid['date'].iloc[-1], linewidth=3)
 
-    ax.set_ylim(0, 10000)
+    ax.set_ylim(0, 12000)
     ax.set_ylabel('Cases per day')
     ax2.set_ylabel('IC occupation per day', color='r')
     ax2.set_ylim(0, 1000)
