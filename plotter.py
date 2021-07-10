@@ -152,6 +152,7 @@ def plot_save(data, light=True):
              ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
              ['2021-07-09', 'Oeps: Stop met feesten'],
+             ['2021-08-14', 'Dansen mag weer'],
              ['2021-09-01', 'Stap 5: Einde maatregelen']]
 
     for step in steps:
