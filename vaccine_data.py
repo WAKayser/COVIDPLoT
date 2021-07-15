@@ -49,23 +49,23 @@ def get_target(data, df):
     per_covid = 0.8 * had_covid / adults
 
     support_rivm = data['vaccine_vaccinated_or_support']['last_value']['percentage_average']
-    url = "https://data.rivm.nl/covid-19/COVID-19_gedrag.csv"
+    # url = "https://data.rivm.nl/covid-19/COVID-19_gedrag.csv"
 
-    data = pd.read_csv(url, sep=';')
+    # data = pd.read_csv(url, sep=';')
 
-    data = data[data['Wave'] == max(data['Wave'])]
-    data = data[data['Region_name'] == 'Nederland']
-    data = data[data['Subgroup_category'] == 'Alle']
-    data = data[data['Indicator_category'] == 'Vaccinatiebereidheid']
+    # data = data[data['Wave'] == max(data['Wave'])]
+    # data = data[data['Region_name'] == 'Nederland']
+    # data = data[data['Subgroup_category'] == 'Alle']
+    # data = data[data['Indicator_category'] == 'Vaccinatiebereidheid']
 
-    positive = int(data[data['Indicator'] == 'Ja']['Value'])
-    negative = int(data[data['Indicator'] == 'Nee']['Value'])
+    # positive = int(data[data['Indicator'] == 'Ja']['Value'])
+    # negative = int(data[data['Indicator'] == 'Nee']['Value'])
 
-    # support_wouter = positive / (positive + negative)
-    support_wouter = 94.3 / (94.3 + 3.8)
+    # # support_wouter = positive / (positive + negative)
+    # support_wouter = 0.943
 
     full_group = int(adults * (2 - per_janssen - per_covid))
-    group_wouter = int(full_group * support_wouter)
+    group_wouter = int(full_group * support_rivm / 100)
     group_rivm = int(full_group * support_rivm / 100)
 
     last_period = int(sum(df[-29:-1]['value']))
@@ -74,7 +74,7 @@ def get_target(data, df):
     # first_rivm = group_rivm - last_period
     adults_full = group_wouter
 
-    kids_full = group_wouter + (0.72 * 2 * 1_200_000)
+    kids_full = group_wouter + (0.7 * 2 * 1_200_000)
     # full_rivm = group_rivm + (0.72 * 2 * 1_200_000)
 
     return first_wouter, adults_full, kids_full
