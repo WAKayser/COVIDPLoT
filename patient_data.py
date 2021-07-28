@@ -50,8 +50,8 @@ def infection_predictor(df, end, data, shift=0):
     weekly_change = df['average'].iloc[-1] / df['average'].iloc[-8]
     daily_change = weekly_change**(1/7) * per_vax_new**(1/7)
 
-    freshness = date.fromtimestamp(data['variants']['last_value']['date_end_unix'])
-    variant_data = data['variants']['last_value']['delta_percentage'] / 100
+    freshness = date.fromtimestamp(data['variants']['values'][3]['last_value']['date_end_unix'])
+    variant_data = data['variants']['values'][3]['last_value']['percentage'] / 100
 
     gap = date.today() - freshness
     weeks_old = (gap.days / 7) - 1

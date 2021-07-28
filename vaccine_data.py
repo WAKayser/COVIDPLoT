@@ -18,6 +18,9 @@ def get_vaccinations(data):
     df = pd.DataFrame(list(zip(dates, vaccinations)),
                       columns=['date', 'value'])
     df['date'] = df['date'].astype('datetime64[ns]')
+    df = df.set_index("date")
+    df = df.resample("D").mean()
+    df = df.fillna(value=0)
     return df
 
 
@@ -104,7 +107,7 @@ def vaccination_prediction(df, target, type='exponential'):
 
     current_vac = df['value'].sum()
     current_index = len(df)
-    current_day = df['date'].iloc[-1]
+    current_day = df.index.max()
     growth = weekly_growth(df)
     weekly = weekly_model(df)
 
@@ -151,7 +154,7 @@ def get_hugo(df, target):
     hugo = {}
     first, adults, kids = target
 
-    hugo['days_last'] = pd.date_range(start=df['date'].iloc[-1],
+    hugo['days_last'] = pd.date_range(start=df.index.max(),
                                       end='2021-09-01')
     hugo['vacs_last'] = [(adults - current_vac) /
                          (x := len(hugo['days_last']))] * x

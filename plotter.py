@@ -30,20 +30,20 @@ def plot_save(data, light=True):
     fig = plt.figure(figsize=(16, 10))
     plt.subplot(211)
     df = get_vaccinations(data)
-    plt.plot(df['date'], df['value'], label='vaccinated')
+    plt.plot(df.index, df['value'], label='vaccinated')
 
     target = get_target(data, df)
 
-    linear = vaccination_prediction(df, target, type='linear')
-    plt.plot(linear[linear['region'] == 'first']['date'],
-             linear[linear['region'] == 'first']['value'],
-             label='Predict linear adult first')
-    plt.plot(linear[linear['region'] == 'adults']['date'],
-             linear[linear['region'] == 'adults']['value'],
-             label='Predict linear adults full')
-    plt.plot(linear[linear['region'] == 'kids']['date'],
-             linear[linear['region'] == 'kids']['value'],
-             label='Predict linear 12+ full')
+    # linear = vaccination_prediction(df, target, type='linear')
+    # plt.plot(linear[linear['region'] == 'first']['date'],
+    #          linear[linear['region'] == 'first']['value'],
+    #          label='Predict linear adult first')
+    # plt.plot(linear[linear['region'] == 'adults']['date'],
+    #          linear[linear['region'] == 'adults']['value'],
+    #          label='Predict linear adults full')
+    # plt.plot(linear[linear['region'] == 'kids']['date'],
+    #          linear[linear['region'] == 'kids']['value'],
+    #          label='Predict linear 12+ full')
 
     same = vaccination_prediction(df, target, type='no_growth')
     plt.plot(same[same['region'] == 'first']['date'],
@@ -152,7 +152,6 @@ def plot_save(data, light=True):
              ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
              ['2021-07-09', 'Oeps: Stop met feesten'],
-             ['2021-08-14', 'Dansen mag weer'],
              ['2021-09-01', 'Stap 5: Einde maatregelen']]
 
     for step in steps:
