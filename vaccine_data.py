@@ -12,7 +12,7 @@ def get_vaccinations(data):
     for row in data['vaccine_administered_total']['values']:
         current = row['estimated']
         dates.append(date.fromtimestamp(row['date_unix']))
-        vaccinations.append(current - prev)
+        vaccinations.append(int(current - prev))
         prev = current
 
     df = pd.DataFrame(list(zip(dates, vaccinations)),
@@ -21,6 +21,19 @@ def get_vaccinations(data):
     df = df.set_index("date")
     df = df.resample("D").mean()
     df = df.fillna(value=0)
+
+    days_empty = 0
+    for index in range(df.size):
+        if df['value'][index] < 1:
+            days_empty += 1
+        else:
+            if days_empty > 0:
+                days_empty += 1
+                peak = df['value'][index]
+                for x in range(days_empty):
+                    df['value'][index - x] = peak / days_empty
+                days_empty = 0
+
     return df
 
 
@@ -86,7 +99,7 @@ def get_target(data, df):
 def vaccination_prediction(df, target, type='exponential'):
     """Predict the future vaccinations, uses only simple models."""
     last_week = df['value'][-8:-1].sum()
-    week_before = df['value'][-15:-8].sum()
+    week_before = df['value'][-22:-15].sum()
 
     def weekly_growth(df):
         """Predict growth in a basic way, needs to be improved."""
@@ -122,7 +135,7 @@ def vaccination_prediction(df, target, type='exponential'):
         if type == 'exponential':
             day_est = last_week * (growth)**(weeks) * weekly[day_index % 7]
         elif type == 'linear':
-            day_est = (last_week + (last_week - week_before) * weeks) *\
+            day_est = (last_week + (last_week - week_before) * weeks / 2) *\
                       weekly[day_index % 7]
         elif type == 'no_growth':
             day_est = last_week * weekly[day_index % 7]

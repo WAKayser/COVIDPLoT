@@ -34,16 +34,16 @@ def plot_save(data, light=True):
 
     target = get_target(data, df)
 
-    # linear = vaccination_prediction(df, target, type='linear')
-    # plt.plot(linear[linear['region'] == 'first']['date'],
-    #          linear[linear['region'] == 'first']['value'],
-    #          label='Predict linear adult first')
-    # plt.plot(linear[linear['region'] == 'adults']['date'],
-    #          linear[linear['region'] == 'adults']['value'],
-    #          label='Predict linear adults full')
-    # plt.plot(linear[linear['region'] == 'kids']['date'],
-    #          linear[linear['region'] == 'kids']['value'],
-    #          label='Predict linear 12+ full')
+    linear = vaccination_prediction(df, target, type='linear')
+    plt.plot(linear[linear['region'] == 'first']['date'],
+             linear[linear['region'] == 'first']['value'],
+             label='Predict linear adult first')
+    plt.plot(linear[linear['region'] == 'adults']['date'],
+             linear[linear['region'] == 'adults']['value'],
+             label='Predict linear adults full')
+    plt.plot(linear[linear['region'] == 'kids']['date'],
+             linear[linear['region'] == 'kids']['value'],
+             label='Predict linear 12+ full')
 
     same = vaccination_prediction(df, target, type='no_growth')
     plt.plot(same[same['region'] == 'first']['date'],
