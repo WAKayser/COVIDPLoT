@@ -34,6 +34,12 @@ def plot_save(data, light=True):
 
     target = get_target(data, df)
 
+    one_jab = data['vaccine_coverage']['last_value']['partially_or_fully_vaccinated']
+    full_jab = data['vaccine_coverage']['last_value']['fully_vaccinated']
+
+    per_one = format(one_jab / 15_200_000 * 100, '.1f')
+    per_full = format(full_jab / 15_200_000 * 100, '.1f')
+
     linear = vaccination_prediction(df, target, type='linear')
     plt.plot(linear[linear['region'] == 'first']['date'],
              linear[linear['region'] == 'first']['value'],
@@ -95,11 +101,11 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0)
 
-    last_month = max(max(same['date']).month + 1, 9)
+    last_month = max(max(same['date']).month + 1, 11)
     last_month = '{:02d}'.format(last_month)
     x_end = pd.to_datetime(f'2021-{last_month}-01')
     plt.xlim(pd.to_datetime('2021-01-01'), x_end)
-    plt.title('Vaccinations per day as predicted by past or Hugo de Jonge')
+    plt.title(f'Vaccinations per day: Coverage one jab {per_one}%, full {per_full}%')
     plt.legend(loc='upper left')
 
     ax = plt.subplot(212)
@@ -152,7 +158,9 @@ def plot_save(data, light=True):
              ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
              ['2021-07-09', 'Oeps: Stop met feesten'],
-             ['2021-09-01', 'Stap 5: Einde maatregelen']]
+             ['2021-08-30', 'Hoger onderwijs weer open'],
+             ['2021-09-20', 'Einde Mondkapjes en 1.5 meter'],
+             ['2021-11-01', 'Stap x: Einde maatregelen']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
