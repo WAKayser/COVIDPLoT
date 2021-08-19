@@ -36,6 +36,7 @@ def plot_save(data, light=True):
 
     one_jab = data['vaccine_coverage']['last_value']['partially_or_fully_vaccinated']
     full_jab = data['vaccine_coverage']['last_value']['fully_vaccinated']
+    support = data['vaccine_vaccinated_or_support']['last_value']['percentage_average']
 
     per_one = format(one_jab / 15_200_000 * 100, '.1f')
     per_full = format(full_jab / 15_200_000 * 100, '.1f')
@@ -105,7 +106,7 @@ def plot_save(data, light=True):
     last_month = '{:02d}'.format(last_month)
     x_end = pd.to_datetime(f'2021-{last_month}-01')
     plt.xlim(pd.to_datetime('2021-01-01'), x_end)
-    plt.title(f'Vaccinations per day: Coverage one jab {per_one}%, full {per_full}%')
+    plt.title(f'Vaccinations per day: Support {support}, one jab {per_one}%, full {per_full}%')
     plt.legend(loc='upper left')
 
     ax = plt.subplot(212)
