@@ -63,6 +63,8 @@ def infection_predictor(df, end, data, shift=0):
     raw_r = daily_change / (1.5**(1/7) * now_delta + (1-now_delta))
     delta_change = raw_r * (1.5**(1/7) * soon_delta + (1-soon_delta))
 
+    delta_change = daily_change
+
     current_day = df['date'].iloc[-(1+shift)]
     value = df['average'].iloc[-1]
     delta = df['average'].iloc[-1]
