@@ -63,10 +63,6 @@ def plot_save(data, light=True):
              same[same['region'] == 'kids']['value'],
              label='Predict same 12+ full')
 
-    hugo = get_hugo(df, target)
-    plt.plot(hugo['days_last'], hugo['vacs_last'],
-             label='12+ full tempo')
-
     current_week = get_week_planning(data)
     plt.plot(current_week['date'], current_week['value'],
              label='Scheduled this week', linewidth=3)
