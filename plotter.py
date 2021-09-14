@@ -98,7 +98,7 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0)
 
-    last_month = max(max(same['date']).month + 1, 11)
+    last_month = min(max(max(same['date']).month + 1, 11), 12)
     last_month = '{:02d}'.format(last_month)
     x_end = pd.to_datetime(f'2021-{last_month}-01')
     plt.xlim(pd.to_datetime('2021-01-01'), x_end)
@@ -156,7 +156,7 @@ def plot_save(data, light=True):
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
              ['2021-07-09', 'Oeps: Stop met feesten'],
              ['2021-08-30', 'Hoger onderwijs weer open'],
-             ['2021-09-20', 'Einde Mondkapjes en 1.5 meter'],
+             ['2021-09-25', 'Einde 1.5 meter en feest tot 12'],
              ['2021-11-01', 'Stap x: Einde maatregelen']]
 
     for step in steps:
