@@ -96,7 +96,7 @@ def plot_save(data, light=True):
     # plt.axvline(df['date'].iloc[-1], linewidth=3)
     plt.ylabel('Vaccinations per day')
     plt.xlabel('Date')
-    plt.ylim(bottom=0)
+    plt.ylim(bottom=0, top=350000)
 
     last_month = min(max(max(same['date']).month + 1, 11), 12)
     last_month = '{:02d}'.format(last_month)
