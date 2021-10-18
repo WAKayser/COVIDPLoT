@@ -111,10 +111,7 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0, top=350000)
 
-    last_month = min(max(max(same['date']).month + 1, 11), 12)
-    last_month = '{:02d}'.format(last_month)
-    x_end = pd.to_datetime(f'2021-{last_month}-01')
-    plt.xlim(pd.to_datetime('2021-01-01'), x_end)
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2021-12-01'))
     plt.title(
         f'Vaccinations: Support {support}, one {per_one}%, full {per_full}%'
     )
@@ -172,12 +169,12 @@ def plot_save(data, light=True):
     ax2 = ax.twinx()
     ICs = get_ic_cases(data)
     ax2.plot(ICs['date'], ICs['value'], label='IC occupation', color='r')
-    ax2.plot(ICs['date'],
-             ICs['average'],
+    ax2.plot(ICs['date'][:-3],
+             ICs['average'][3:],
              label='Average IC occupation',
              color='r',
              linewidth=3)
-    ic_prediction = infection_predictor(ICs, same['date'].iloc[-1], data)
+    ic_prediction = infection_predictor(ICs, same['date'].iloc[-1], data, shift=3)
     ax2.plot(ic_prediction['date'],
              ic_prediction['value'],
              'r+',
@@ -214,7 +211,7 @@ def plot_save(data, light=True):
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%'
     )
-    plt.xlim(pd.to_datetime('2021-01-01'), x_end)
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2021-12-01'))
 
     ic_cap = data['intensive_care_lcps']['last_value']
 

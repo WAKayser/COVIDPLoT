@@ -149,7 +149,7 @@ def vaccination_prediction(df, target, type='exponential'):
         else:
             region = 'kids'
 
-        if day_index > 300:
+        if day_index > 500:
             break
 
         if day_est < 0:
