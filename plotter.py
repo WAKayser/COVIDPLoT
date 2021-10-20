@@ -139,11 +139,6 @@ def plot_save(data, light=True):
                 covid_prediction['value'],
                 'k+',
                 label='Infection prediction')
-        ax.plot(covid_prediction['date'],
-                covid_prediction['delta'],
-                'k+',
-                label='Infection prediction Delta',
-                alpha=0.5)
     else:
         ax.plot(covid['date'], covid['value'], label='Infections', color='w')
         ax.plot(covid['date'][:-3],
@@ -155,11 +150,6 @@ def plot_save(data, light=True):
                 covid_prediction['value'],
                 'w+',
                 label='Infection prediction')
-        ax.plot(covid_prediction['date'],
-                covid_prediction['delta'],
-                'w+',
-                label='Infection prediction Delta',
-                alpha=0.5)
 
     levels = [[6250, 'Zeer Ernstig'], [2500, 'Ernstig'], [875, 'Zorgelijk']]
 
@@ -222,7 +212,12 @@ def plot_save(data, light=True):
 
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax2.legend(lines + lines2, labels + labels2, loc='upper right')
+    ax2.legend(
+        lines + lines2,
+        labels + labels2,
+        bbox_to_anchor=(0.76, 0.45),
+        bbox_transform=fig.transFigure
+        )
 
     plt.tight_layout()
     if light:

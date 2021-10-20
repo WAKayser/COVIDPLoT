@@ -70,7 +70,7 @@ def infection_predictor(df, end, data, shift=0):
     delta = df['average'].iloc[-1]
 
     prediction = pd.DataFrame(columns=['date', 'value', 'delta'])
-    for _ in range(21):
+    for _ in range(18):
         current_day = current_day + pd.Timedelta(days=1)
         value *= daily_change
         delta *= delta_change
