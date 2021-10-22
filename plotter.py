@@ -205,7 +205,7 @@ def plot_save(data, light=True):
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
-    ax2.axhline(1350 - ic_cap['beds_occupied_non_covid'],
+    ax2.axhline(1000 - ic_cap['beds_occupied_non_covid'],
                 color='r',
                 linestyle='--',
                 label='IC capacity for COVID')
