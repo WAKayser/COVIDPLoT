@@ -208,7 +208,13 @@ def plot_save(data, light=True):
     ax2.axhline(1000 - ic_cap['beds_occupied_non_covid'],
                 color='r',
                 linestyle='--',
-                label='IC capacity for COVID')
+                label='Current ICs for COVID')
+
+    ax2.axhline(1150 - ic_cap['beds_occupied_non_covid'],
+                color='r',
+                linestyle='--',
+                linewidth=2,
+                label='MAX ICs for COVID')
 
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
