@@ -184,7 +184,7 @@ def plot_save(data, light=True):
              ['2021-07-09', 'Oeps: Stop met feesten'],
              ['2021-08-30', 'Hoger onderwijs weer open'],
              ['2021-09-25', 'Einde 1.5 meter en feest tot 12'],
-             ['2021-11-01', 'Stap x: Einde maatregelen']]
+             ['2021-11-03', 'PersCo!']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
