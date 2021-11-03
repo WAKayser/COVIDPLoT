@@ -27,7 +27,7 @@ def plot_save(data, light=True):
     else:
         plt.style.use('dark_background')
 
-    fig = plt.figure(figsize=(16, 10))
+    fig = plt.figure(figsize=(18, 10))
     plt.subplot(211)
     df = get_vaccinations(data)
     plt.plot(df.index, df['value'], label='vaccinated')
@@ -45,44 +45,32 @@ def plot_save(data, light=True):
     # per_one = format(one_jab / 15_200_000 * 100, '.1f')
     # per_full = format(full_jab / 15_200_000 * 100, '.1f')
 
-    linear = vaccination_prediction(df, target, type='linear')
-    plt.plot(linear[linear['region'] == 'first']['date'],
-             linear[linear['region'] == 'first']['value'],
-             label='Predict linear adult first')
-    plt.plot(linear[linear['region'] == 'adults']['date'],
-             linear[linear['region'] == 'adults']['value'],
-             label='Predict linear adults full')
-    plt.plot(linear[linear['region'] == 'kids']['date'],
-             linear[linear['region'] == 'kids']['value'],
-             label='Predict linear 12+ full')
+    # linear = vaccination_prediction(df, target, type='linear')
+    # plt.plot(linear[linear['region'] == 'first']['date'],
+    #          linear[linear['region'] == 'first']['value'],
+    #          label='Predict linear adult first')
+    # plt.plot(linear[linear['region'] == 'adults']['date'],
+    #          linear[linear['region'] == 'adults']['value'],
+    #          label='Predict linear adults full')
+    # plt.plot(linear[linear['region'] == 'kids']['date'],
+    #          linear[linear['region'] == 'kids']['value'],
+    #          label='Predict linear 12+ full')
 
     same = vaccination_prediction(df, target, type='no_growth')
-    plt.plot(same[same['region'] == 'first']['date'],
-             same[same['region'] == 'first']['value'],
-             label='Predict same adult first')
-    plt.plot(same[same['region'] == 'adults']['date'],
-             same[same['region'] == 'adults']['value'],
-             label='Predict same adults full')
-    plt.plot(same[same['region'] == 'kids']['date'],
-             same[same['region'] == 'kids']['value'],
-             label='Predict same 12+ full')
+    # plt.plot(same[same['region'] == 'first']['date'],
+    #          same[same['region'] == 'first']['value'],
+    #          label='Predict same adult first')
+    # plt.plot(same[same['region'] == 'adults']['date'],
+    #          same[same['region'] == 'adults']['value'],
+    #          label='Predict same adults full')
+    # plt.plot(same[same['region'] == 'kids']['date'],
+    #          same[same['region'] == 'kids']['value'],
+    #          label='Predict same 12+ full')
 
     current_week = get_week_planning(data)
     plt.plot(current_week['date'],
              current_week['value'],
              label='Scheduled this week',
-             linewidth=3)
-
-    previous_deliveries, future_deliveries = get_deliveries(data)
-    plt.plot(previous_deliveries['date'],
-             previous_deliveries['value'],
-             ':',
-             label='Vaccinations delivered',
-             linewidth=3)
-    plt.plot(future_deliveries['date'],
-             future_deliveries['value'],
-             ':',
-             label='Vaccinations delivery estimation',
              linewidth=3)
 
     steps = [
@@ -100,6 +88,10 @@ def plot_save(data, light=True):
         ['2021-06-23', 'Iedereen mag Janssen'],
         ['2021-07-07', '18+ eerste prik'],
         ['2021-09-01', 'Iedereen volledig'],
+        ['2021-10-06', 'Booster Ernstige afweerstoornis'],
+        ['2021-11-03', 'Booster 80+'],
+        ['2021-12-01', 'Booster zorg'],
+        ['2022-01-01', 'Booster 60+']
     ]
 
     for step in steps:
@@ -111,10 +103,10 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0, top=350000)
 
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2021-12-01'))
-    plt.title(
-        f'Vaccinations: Support {support}, one {per_one}%, full {per_full}%'
-    )
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-01-01'))
+    plt.title(f'Vaccinations: Support {support},'
+              f' one {per_one}%, full {per_full}%, booster unknown%')
+
     plt.legend(loc='upper left')
 
     ax = plt.subplot(212)
@@ -184,14 +176,15 @@ def plot_save(data, light=True):
              ['2021-07-09', 'Oeps: Stop met feesten'],
              ['2021-08-30', 'Hoger onderwijs weer open'],
              ['2021-09-25', 'Einde 1.5 meter en feest tot 12'],
-             ['2021-11-03', 'PersCo!']]
+             ['2021-11-06', 'Meer Mondkapjes & CoronaCheck'],
+             ['2021-11-12', 'Peilmoment']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
 
     # plt.axvline(covid['date'].iloc[-1], linewidth=3)
 
-    ax.set_ylim(0, 12000)
+    ax.set_ylim(0, 14000)
     ax.set_ylabel('Cases per day')
     ax2.set_ylabel('IC occupation per day', color='r')
     ax2.set_ylim(0, 1000)
@@ -201,7 +194,7 @@ def plot_save(data, light=True):
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%'
     )
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2021-12-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-01-01'))
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
@@ -221,9 +214,7 @@ def plot_save(data, light=True):
     ax2.legend(
         lines + lines2,
         labels + labels2,
-        bbox_to_anchor=(0.76, 0.45),
-        bbox_transform=fig.transFigure
-        )
+        loc='upper left')
 
     plt.tight_layout()
     if light:
