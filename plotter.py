@@ -7,17 +7,32 @@ Wouter Kayser
 import pandas as pd
 import matplotlib.pyplot as plt
 import requests
+import zipfile
+import json
 from datetime import date
+
 from vaccine_data import *
 from patient_data import *
 
 
 def download_data():
     """Get latest json file from corona dashboard."""
-    url = 'https://coronadashboard.rijksoverheid.nl/json/NL.json'
+    try:
+        url = 'https://coronadashboard.rijksoverheid.nl/json/NL.json'
 
-    r = requests.get(url)
-    return r.json()
+        r = requests.get(url)
+        return r.json()
+    except:  # noqa
+        url = "https://coronadashboard.rijksoverheid.nl/json/latest-data.zip"
+        r = requests.get(url)
+        with open('nl.zip', 'wb') as file:
+            file.write(r.content)
+
+        with zipfile.ZipFile('nl.zip', 'r') as zip_file:
+            zip_file.extract('NL.json')
+
+        with open('nl.json') as json_file:
+            return json.load(json_file)
 
 
 def plot_save(data, light=True):
