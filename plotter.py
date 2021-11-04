@@ -31,7 +31,7 @@ def download_data():
         with zipfile.ZipFile('nl.zip', 'r') as zip_file:
             zip_file.extract('NL.json')
 
-        with open('nl.json') as json_file:
+        with open('NL.json') as json_file:
             return json.load(json_file)
 
 
