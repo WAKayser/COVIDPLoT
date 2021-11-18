@@ -104,7 +104,7 @@ def plot_save(data, light=True):
         ['2021-07-07', '18+ eerste prik'],
         ['2021-09-01', 'Iedereen volledig'],
         ['2021-10-06', 'Booster Ernstige afweerstoornis'],
-        ['2021-11-03', 'Booster 80+'],
+        ['2021-11-17', 'Booster 80+'],
         ['2021-12-01', 'Booster zorg'],
         ['2022-01-01', 'Booster 60+']
     ]
@@ -192,14 +192,15 @@ def plot_save(data, light=True):
              ['2021-08-30', 'Hoger onderwijs weer open'],
              ['2021-09-25', 'Einde 1.5 meter en feest tot 12'],
              ['2021-11-06', 'Meer Mondkapjes & CoronaCheck'],
-             ['2021-11-12', 'Peilmoment']]
+             ['2021-11-12', 'Alles dicht om 8 uur'],
+             ['2021-12-03', 'PersCo']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
 
     # plt.axvline(covid['date'].iloc[-1], linewidth=3)
 
-    ax.set_ylim(0, 20000)
+    ax.set_ylim(0, 25000)
     ax.set_ylabel('Cases per day')
     ax2.set_ylabel('IC occupation per day', color='r')
     ax2.set_ylim(0, 1000)
