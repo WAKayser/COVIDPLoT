@@ -36,19 +36,20 @@ def get_ic_cases(data):
     df = pd.DataFrame(list(zip(dates, patient)),
                       columns=['date', 'value'])
     df['date'] = df['date'].astype('datetime64[ns]')
+    df = df.sort_values(by='date')
     df = df.interpolate(method="pad")
     df['average'] = df['value'].rolling(window=7).mean()
 
     return df
 
 
-def infection_predictor(df, end, data, shift=0):
+def infection_predictor(df, data, shift=0):
     """Predict the number of patients with a to simple R like calculation."""
     new_vax = data['vaccine_administered_planned']['values'][0]
     per_vax_new = 1 - (new_vax['doses'] * 3 / 2 / 15_200_000)
 
     weekly_change = df['average'].iloc[-1] / df['average'].iloc[-8]
-    daily_change = weekly_change**(1/7) * per_vax_new**(1/7)
+    daily_change = weekly_change**(1/7)
 
     freshness = date.fromtimestamp(data['variants']['values'][3]['last_value']['date_end_unix'])
     variant_data = data['variants']['values'][3]['last_value']['percentage'] / 100

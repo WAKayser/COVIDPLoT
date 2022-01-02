@@ -42,15 +42,16 @@ def plot_save(data, light=True):
     else:
         plt.style.use('dark_background')
 
-    fig = plt.figure(figsize=(18, 10))
+    fig = plt.figure(figsize=(24, 10))
     plt.subplot(211)
     df = get_vaccinations(data)
     plt.plot(df.index, df['value'], label='vaccinated')
     target = get_target(data, df)
 
     estimate = data['vaccine_coverage_per_age_group_estimated']['last_value']
-    per_one = estimate['age_12_plus_has_one_shot']
-    per_full = estimate['age_12_plus_fully_vaccinated']
+    per_one = estimate['age_18_plus_has_one_shot']
+    per_full = estimate['age_18_plus_fully_vaccinated']
+    booster_per = data['booster_and_third_shot_administered']['last_value']['received_booster_percentage']
 
     # one_jab = data['vaccine_coverage']['last_value']['partially_or_fully_vaccinated']
     # full_jab = data['vaccine_coverage']['last_value']['fully_vaccinated']
@@ -106,7 +107,7 @@ def plot_save(data, light=True):
         ['2021-10-06', 'Booster Ernstige afweerstoornis'],
         ['2021-11-17', 'Booster 80+'],
         ['2021-12-01', 'Booster zorg'],
-        ['2022-01-01', 'Booster 60+']
+        ['2021-12-20', '1ste Booster']
     ]
 
     for step in steps:
@@ -118,9 +119,9 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0, top=350000)
 
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-01-01'))
-    plt.title(f'Vaccinations: Support {support},'
-              f' one {per_one}%, full {per_full}%, booster unknown%')
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-02-01'))
+    plt.title(f'Vaccinations: 18+'
+              f' one {per_one}%, full {per_full}%, booster {booster_per}%')
 
     plt.legend(loc='upper left')
 
@@ -131,7 +132,6 @@ def plot_save(data, light=True):
     per_covid = format(total_covid / 15_200_000 * 100, '.1f')
 
     covid_prediction = infection_predictor(covid,
-                                           covid['date'].iloc[-1],
                                            data,
                                            shift=3)
 
@@ -171,7 +171,7 @@ def plot_save(data, light=True):
              label='Average IC occupation',
              color='r',
              linewidth=3)
-    ic_prediction = infection_predictor(ICs, same['date'].iloc[-1], data, shift=3)
+    ic_prediction = infection_predictor(ICs, data, shift=3)
     ax2.plot(ic_prediction['date'],
              ic_prediction['value'],
              'r+',
@@ -193,7 +193,9 @@ def plot_save(data, light=True):
              ['2021-09-25', 'Einde 1.5 meter en feest tot 12'],
              ['2021-11-06', 'Meer Mondkapjes & CoronaCheck'],
              ['2021-11-12', 'Alles dicht om 8 uur'],
-             ['2021-11-26', 'PersCo']]
+             ['2021-11-28', 'Alles dicht om 5 uur'],
+             ['2021-12-19', 'Lockdown'],
+             ['2022-01-14', 'PersCo']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
@@ -210,20 +212,20 @@ def plot_save(data, light=True):
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%'
     )
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-01-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-02-01'))
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
-    ax2.axhline(1000 - ic_cap['beds_occupied_non_covid'],
+    ax2.axhline(1073 - ic_cap['beds_occupied_non_covid'] - 188,
                 color='r',
                 linestyle='--',
-                label='Current ICs for COVID')
+                label='ICs for COVID w/ BOSS')
 
-    ax2.axhline(1150 - ic_cap['beds_occupied_non_covid'],
+    ax2.axhline(1073 - ic_cap['beds_occupied_non_covid'],
                 color='r',
                 linestyle='--',
                 linewidth=2,
-                label='MAX ICs for COVID')
+                label='ICs for COVID w/o BOSS')
 
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
