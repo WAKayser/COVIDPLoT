@@ -119,7 +119,7 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0, top=350000)
 
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-02-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
     plt.title(f'Vaccinations: 18+'
               f' one {per_one}%, full {per_full}%, booster {booster_per}%')
 
@@ -177,15 +177,15 @@ def plot_save(data, light=True):
              'r+',
              label='IC prediction')
 
-    steps = [['2021-01-12', 'PersCo: geen aanpassingen'],
-             ['2021-01-20', 'PersCo: Avondklok 9 uur'],
-             ['2021-02-02', 'PersCo: Scholen open'],
-             ['2021-02-23', 'PersCo: beetje versoepelen'],
-             ['2021-03-08', 'PersCo: beetje versoepelen'],
-             ['2021-03-23', 'PersCo: Avondklok 10 uur'],
-             ['2021-04-13', 'PersCo: Stappenplan'],
-             ['2021-04-28', 'Stap 1: terrassen'],
-             ['2021-05-18', 'Stap 2: buiten locaties'],
+    steps = [['2021-01-12', 'Geen aanpassingen'],
+             ['2021-01-20', 'Avondklok 9 uur'],
+             ['2021-02-02', 'Scholen open'],
+             ['2021-02-23', 'Beetje versoepelen'],
+             ['2021-03-08', 'Beetje versoepelen'],
+             ['2021-03-23', 'Avondklok 10 uur'],
+             ['2021-04-13', 'Stappenplan gemaakt'],
+             ['2021-04-28', 'Stap 1: Terrassen'],
+             ['2021-05-18', 'Stap 2: Buiten locaties'],
              ['2021-06-05', 'Stap 3: Horeca 10 + binnencultuur'],
              ['2021-06-26', 'Stap 4: Minder voorwaarden + disco'],
              ['2021-07-09', 'Oeps: Stop met feesten'],
@@ -195,7 +195,8 @@ def plot_save(data, light=True):
              ['2021-11-12', 'Alles dicht om 8 uur'],
              ['2021-11-28', 'Alles dicht om 5 uur'],
              ['2021-12-19', 'Lockdown'],
-             ['2022-01-14', 'PersCo']]
+             ['2022-01-15', 'Winkels Open'],
+             ['2022-01-25', 'PersCo']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
@@ -212,7 +213,7 @@ def plot_save(data, light=True):
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%'
     )
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-02-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
