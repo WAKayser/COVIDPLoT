@@ -42,8 +42,8 @@ def plot_save(data, light=True):
     else:
         plt.style.use('dark_background')
 
-    fig = plt.figure(figsize=(24, 10))
-    plt.subplot(211)
+    fig = plt.figure(figsize=(24, 15))
+    plt.subplot(311)
     df = get_vaccinations(data)
     plt.plot(df.index, df['value'], label='vaccinated')
     target = get_target(data, df)
@@ -51,7 +51,8 @@ def plot_save(data, light=True):
     estimate = data['vaccine_coverage_per_age_group_estimated']['last_value']
     per_one = estimate['age_18_plus_has_one_shot']
     per_full = estimate['age_18_plus_fully_vaccinated']
-    booster_per = data['booster_and_third_shot_administered']['last_value']['received_booster_percentage']
+    booster_per = data['booster_and_third_shot_administered']['last_value'][
+        'received_booster_percentage']
 
     # one_jab = data['vaccine_coverage']['last_value']['partially_or_fully_vaccinated']
     # full_jab = data['vaccine_coverage']['last_value']['fully_vaccinated']
@@ -89,26 +90,19 @@ def plot_save(data, light=True):
              label='Scheduled this week',
              linewidth=3)
 
-    steps = [
-        ['2021-01-06', 'Zorg en instellingen'],
-        ['2021-01-26', '90+'],
-        ['2021-02-12', '80+'],
-        ['2021-02-15', '65-61 en hoog risico'],
-        ['2021-03-13', '75+'],
-        ['2021-04-06', '70+'],
-        ['2021-04-26', '65+'],
-        ['2021-05-01', '50+ en medische indicatie'],
-        ['2021-05-25', '40+'],
-        ['2021-06-02', '30+'],
-        ['2021-06-10', '18+'],
-        ['2021-06-23', 'Iedereen mag Janssen'],
-        ['2021-07-07', '18+ eerste prik'],
-        ['2021-09-01', 'Iedereen volledig'],
-        ['2021-10-06', 'Booster Ernstige afweerstoornis'],
-        ['2021-11-17', 'Booster 80+'],
-        ['2021-12-01', 'Booster zorg'],
-        ['2021-12-20', '1ste Booster']
-    ]
+    steps = [['2021-01-06', 'Zorg en instellingen'], ['2021-01-26', '90+'],
+             ['2021-02-12', '80+'], ['2021-02-15', '65-61 en hoog risico'],
+             ['2021-03-13', '75+'], ['2021-04-06',
+                                     '70+'], ['2021-04-26', '65+'],
+             ['2021-05-01',
+              '50+ en medische indicatie'], ['2021-05-25', '40+'],
+             ['2021-06-02', '30+'], ['2021-06-10', '18+'],
+             ['2021-06-23', 'Iedereen mag Janssen'],
+             ['2021-07-07', '18+ eerste prik'],
+             ['2021-09-01', 'Iedereen volledig'],
+             ['2021-10-06', 'Booster Ernstige afweerstoornis'],
+             ['2021-11-17', 'Booster 80+'], ['2021-12-01', 'Booster zorg'],
+             ['2021-12-20', '1ste Booster']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light, 200, 0.5)
@@ -125,15 +119,13 @@ def plot_save(data, light=True):
 
     plt.legend(loc='upper left')
 
-    ax = plt.subplot(212)
+    ax = plt.subplot(312)  # Second plot
 
     covid = get_covid_cases(data)
     total_covid = sum(covid['value'])
     per_covid = format(total_covid / 15_200_000 * 100, '.1f')
 
-    covid_prediction = infection_predictor(covid,
-                                           data,
-                                           shift=3)
+    covid_prediction = infection_predictor(covid, data, shift=3)
 
     if light:
         ax.plot(covid['date'], covid['value'], label='Infections', color='k')
@@ -163,23 +155,8 @@ def plot_save(data, light=True):
     for level in levels:
         plot_danger_levels(*level, plt, light)
 
-    ax2 = ax.twinx()
-    ICs = get_ic_cases(data)
-    ax2.plot(ICs['date'], ICs['value'], label='IC occupation', color='r')
-    ax2.plot(ICs['date'][:-3],
-             ICs['average'][3:],
-             label='Average IC occupation',
-             color='r',
-             linewidth=3)
-    ic_prediction = infection_predictor(ICs, data, shift=3)
-    ax2.plot(ic_prediction['date'],
-             ic_prediction['value'],
-             'r+',
-             label='IC prediction')
-
     steps = [['2021-01-12', 'Geen aanpassingen'],
-             ['2021-01-20', 'Avondklok 9 uur'],
-             ['2021-02-02', 'Scholen open'],
+             ['2021-01-20', 'Avondklok 9 uur'], ['2021-02-02', 'Scholen open'],
              ['2021-02-23', 'Beetje versoepelen'],
              ['2021-03-08', 'Beetje versoepelen'],
              ['2021-03-23', 'Avondklok 10 uur'],
@@ -194,46 +171,65 @@ def plot_save(data, light=True):
              ['2021-11-06', 'Meer Mondkapjes & CoronaCheck'],
              ['2021-11-12', 'Alles dicht om 8 uur'],
              ['2021-11-28', 'Alles dicht om 5 uur'],
-             ['2021-12-19', 'Lockdown'],
-             ['2022-01-15', 'Winkels Open'],
+             ['2021-12-19', 'Lockdown'], ['2022-01-15', 'Winkels Open'],
              ['2022-01-25', 'PersCo']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light)
 
-    # plt.axvline(covid['date'].iloc[-1], linewidth=3)
+    ggd_data = get_ggd_data()
 
-    ax.set_ylim(0, 50000)
+    ax.plot(ggd_data['Date_of_statistics'],
+            ggd_data['Tested_positive'],
+            'r',
+            label='GGD data')
+
+    ax.set_ylim(bottom=0)
     ax.set_ylabel('Cases per day')
-    ax2.set_ylabel('IC occupation per day', color='r')
-    ax2.set_ylim(0, 1000)
-    ax2.set_xlabel('Date')
-    ax2.tick_params(axis='y', colors='red')
-
     plt.title(
-        f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%'
-    )
+        f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%')
     plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
+
+    ax.legend(loc='upper left')
+
+    ax = plt.subplot(313)  # IC Plot
+
+    ICs = get_ic_cases(data)
+
+    ax.plot(ICs['date'], ICs['value'], label='IC occupation', color='r')
+    ax.plot(ICs['date'][:-3],
+            ICs['average'][3:],
+            label='Average IC occupation',
+            color='r',
+            linewidth=3)
+    ic_prediction = infection_predictor(ICs, data, shift=3)
+    ax.plot(ic_prediction['date'],
+            ic_prediction['value'],
+            'r+',
+            label='IC prediction')
+
+    plt.title(f'COVID-19 IC occupation')
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
+
+    ax.set_ylabel('IC occupation per day', color='r')
+    ax.set_ylim(0, 1000)
+    ax.set_xlabel('Date')
+    ax.tick_params(axis='y', colors='red')
 
     ic_cap = data['intensive_care_lcps']['last_value']
 
-    ax2.axhline(1073 - ic_cap['beds_occupied_non_covid'] - 188,
-                color='r',
-                linestyle='--',
-                label='ICs for COVID w/ BOSS')
+    ax.axhline(1073 - ic_cap['beds_occupied_non_covid'] - 188,
+               color='r',
+               linestyle='--',
+               label='ICs for COVID w/ BOSS')
 
-    ax2.axhline(1073 - ic_cap['beds_occupied_non_covid'],
-                color='r',
-                linestyle='--',
-                linewidth=2,
-                label='ICs for COVID w/o BOSS')
+    ax.axhline(1073 - ic_cap['beds_occupied_non_covid'],
+               color='r',
+               linestyle='--',
+               linewidth=2,
+               label='ICs for COVID w/o BOSS')
 
-    lines, labels = ax.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax2.legend(
-        lines + lines2,
-        labels + labels2,
-        loc='upper left')
+    ax.legend(loc='upper left')
 
     plt.tight_layout()
     if light:

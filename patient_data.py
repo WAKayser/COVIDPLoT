@@ -1,6 +1,15 @@
 """Help files for patient data."""
 from datetime import date
 import pandas as pd
+import requests
+
+
+def get_ggd_data():
+    """Get GGD data to plot alongside"""
+    url = "https://data.rivm.nl/covid-19/COVID-19_uitgevoerde_testen.csv"
+    data = pd.read_csv(url, sep=';')
+    data['Date_of_statistics'] = pd.to_datetime(data['Date_of_statistics'])
+    return data.groupby(by=('Date_of_statistics'), as_index=False).sum()
 
 
 def get_covid_cases(data):
