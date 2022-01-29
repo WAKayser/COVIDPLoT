@@ -52,37 +52,13 @@ def plot_save(data, light=True):
     per_one = estimate['age_18_plus_has_one_shot']
     per_full = estimate['age_18_plus_fully_vaccinated']
     booster_per = data['booster_and_third_shot_administered']['last_value'][
-        'received_booster_percentage']
+        'administered_total'] / 15_200_000 * 100
+    booster_per = format(booster_per, '.1f')
 
-    # one_jab = data['vaccine_coverage']['last_value']['partially_or_fully_vaccinated']
-    # full_jab = data['vaccine_coverage']['last_value']['fully_vaccinated']
     support = data['vaccine_vaccinated_or_support']['last_value'][
         'percentage_average']
 
-    # per_one = format(one_jab / 15_200_000 * 100, '.1f')
-    # per_full = format(full_jab / 15_200_000 * 100, '.1f')
-
-    # linear = vaccination_prediction(df, target, type='linear')
-    # plt.plot(linear[linear['region'] == 'first']['date'],
-    #          linear[linear['region'] == 'first']['value'],
-    #          label='Predict linear adult first')
-    # plt.plot(linear[linear['region'] == 'adults']['date'],
-    #          linear[linear['region'] == 'adults']['value'],
-    #          label='Predict linear adults full')
-    # plt.plot(linear[linear['region'] == 'kids']['date'],
-    #          linear[linear['region'] == 'kids']['value'],
-    #          label='Predict linear 12+ full')
-
     same = vaccination_prediction(df, target, type='no_growth')
-    # plt.plot(same[same['region'] == 'first']['date'],
-    #          same[same['region'] == 'first']['value'],
-    #          label='Predict same adult first')
-    # plt.plot(same[same['region'] == 'adults']['date'],
-    #          same[same['region'] == 'adults']['value'],
-    #          label='Predict same adults full')
-    # plt.plot(same[same['region'] == 'kids']['date'],
-    #          same[same['region'] == 'kids']['value'],
-    #          label='Predict same 12+ full')
 
     current_week = get_week_planning(data)
     plt.plot(current_week['date'],
@@ -113,7 +89,7 @@ def plot_save(data, light=True):
     plt.xlabel('Date')
     plt.ylim(bottom=0, top=350000)
 
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-04-01'))
     plt.title(f'Vaccinations: 18+'
               f' one {per_one}%, full {per_full}%, booster {booster_per}%')
 
@@ -172,10 +148,10 @@ def plot_save(data, light=True):
              ['2021-11-12', 'Alles dicht om 8 uur'],
              ['2021-11-28', 'Alles dicht om 5 uur'],
              ['2021-12-19', 'Lockdown'], ['2022-01-15', 'Winkels Open'],
-             ['2022-01-25', 'PersCo']]
+             ['2022-01-26', 'Alles tot 10 open'], ['2022-03-08', 'Peilmoment']]
 
     for step in steps:
-        plot_steps_gov(*step, plt, light)
+        plot_steps_gov(*step, plt, light, factor=50)
 
     ggd_data = get_ggd_data()
 
@@ -184,11 +160,11 @@ def plot_save(data, light=True):
             'r',
             label='GGD data')
 
-    ax.set_ylim(bottom=0)
+    ax.set_ylim(bottom=0, top=100_000)
     ax.set_ylabel('Cases per day')
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%')
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-04-01'))
 
     ax.legend(loc='upper left')
 
@@ -209,7 +185,7 @@ def plot_save(data, light=True):
             label='IC prediction')
 
     plt.title(f'COVID-19 IC occupation')
-    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-03-01'))
+    plt.xlim(pd.to_datetime('2021-01-01'), pd.to_datetime('2022-04-01'))
 
     ax.set_ylabel('IC occupation per day', color='r')
     ax.set_ylim(0, 1000)
