@@ -160,7 +160,7 @@ def plot_save(data, light=True):
             'r',
             label='GGD data')
 
-    ax.set_ylim(bottom=0, top=100_000)
+    ax.set_ylim(bottom=0, top=120_000)
     ax.set_ylabel('Cases per day')
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%')
