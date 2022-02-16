@@ -148,7 +148,9 @@ def plot_save(data, light=True):
              ['2021-11-12', 'Alles dicht om 8 uur'],
              ['2021-11-28', 'Alles dicht om 5 uur'],
              ['2021-12-19', 'Lockdown'], ['2022-01-15', 'Winkels Open'],
-             ['2022-01-26', 'Alles tot 10 open'], ['2022-03-08', 'Peilmoment']]
+             ['2022-01-26', 'Alles tot 10 open'],
+             ['2022-02-18', 'Horeca tot 1 uur'],
+             ['2022-02-25', 'Bijna geen maatregelen']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light, factor=50)
@@ -160,7 +162,7 @@ def plot_save(data, light=True):
             'r',
             label='GGD data')
 
-    ax.set_ylim(bottom=0, top=120_000)
+    ax.set_ylim(bottom=0, top=100_000)
     ax.set_ylabel('Cases per day')
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%')
