@@ -132,7 +132,8 @@ def plot_save(data, light=True):
         plot_danger_levels(*level, plt, light)
 
     steps = [['2021-01-12', 'Geen aanpassingen'],
-             ['2021-01-20', 'Avondklok 9 uur'], ['2021-02-02', 'Scholen open'],
+             ['2021-01-20', 'Avondklok 9 uur'], 
+             ['2021-02-02', 'Scholen open'],
              ['2021-02-23', 'Beetje versoepelen'],
              ['2021-03-08', 'Beetje versoepelen'],
              ['2021-03-23', 'Avondklok 10 uur'],
@@ -147,10 +148,12 @@ def plot_save(data, light=True):
              ['2021-11-06', 'Meer Mondkapjes & CoronaCheck'],
              ['2021-11-12', 'Alles dicht om 8 uur'],
              ['2021-11-28', 'Alles dicht om 5 uur'],
-             ['2021-12-19', 'Lockdown'], ['2022-01-15', 'Winkels Open'],
+             ['2021-12-19', 'Lockdown'], 
+             ['2022-01-15', 'Winkels Open'],
              ['2022-01-26', 'Alles tot 10 open'],
              ['2022-02-18', 'Horeca tot 1 uur'],
-             ['2022-02-25', 'Bijna geen maatregelen']]
+             ['2022-02-25', 'Bijna geen maatregelen'],
+             ['2022-03-08', 'Volgende PersCo']]
 
     for step in steps:
         plot_steps_gov(*step, plt, light, factor=50)
