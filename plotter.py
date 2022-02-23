@@ -156,7 +156,7 @@ def plot_save(data, light=True):
              ['2022-03-08', 'Volgende PersCo']]
 
     for step in steps:
-        plot_steps_gov(*step, plt, light, factor=50)
+        plot_steps_gov(*step, plt, light, factor=10)
 
     ggd_data = get_ggd_data()
 
@@ -165,7 +165,8 @@ def plot_save(data, light=True):
             'r',
             label='GGD data')
 
-    ax.set_ylim(bottom=0, top=100_000)
+    ax.set_ylim(bottom=400, top=140_000)
+    plt.yscale('log')
     ax.set_ylabel('Cases per day')
     plt.title(
         f'COVID-19 Cases and IC occupation plus stappenplan: {per_covid}%')
